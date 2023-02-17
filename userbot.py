@@ -1,7 +1,5 @@
-from telethon import TelegramClient, sync, functions
-import time
-from telethon.tl.functions.channels import JoinChannelRequest
-from telethon.tl.functions.messages import ImportChatInviteRequest, DeleteChatUserRequest
+from telethon import TelegramClient
+from telethon.tl.functions.messages import ImportChatInviteRequest
 
 
 async def kick_all_users(link, chatname, session, api_id, api_hash):
@@ -41,7 +39,7 @@ async def kick_all_users(link, chatname, session, api_id, api_hash):
     # return (deleted_users)
 
 
-async def delete_all_messages(link, chatname, session, api_id, api_hash):
+async def delete_all_messages(link, session, api_id, api_hash):
     """
 
     :param link:

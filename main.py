@@ -1,10 +1,6 @@
-from aiogram import Bot, Dispatcher, executor, types
-from os import system
 from datetime import datetime, timedelta
-
 from telethon import TelegramClient
-from telethon.tl.functions.messages import ImportChatInviteRequest
-
+from aiogram import Bot, Dispatcher, executor, types
 from userbot import kick_all_users
 
 # system("title Kick User")
@@ -16,10 +12,10 @@ session = '79267450398'
 api_id = '2040'
 api_hash = 'b18441a1ff607e10a989891a5462e627'
 
-
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 client = TelegramClient(session, api_id, api_hash)
+
 
 @dp.message_handler(commands=['start'])  # ДОРАБОТАТЬ!!!
 async def welcome(message: types.Message):
@@ -34,13 +30,13 @@ async def help(message: types.Message):
         chatid = message.chat.id
         expire_date = datetime.now() + timedelta(days=3)
         link = await bot.create_chat_invite_link(chatid, expire_date, 3)
-        invite_link = link.invite_link
         print(f'{link=}')
         chat = await bot.get_chat(chatid)
         chat_title = chat.title
         await client.start()
         await client.send_message(chatid, 'Вступил для администрирования группы')
-    except: await message.answer('')
+    except:
+        await message.answer('')
 
     await message.answer(
         '''
