@@ -4,15 +4,15 @@ from telethon.tl.functions.channels import JoinChannelRequest
 from telethon.tl.functions.messages import ImportChatInviteRequest, DeleteChatUserRequest
 
 
-async def kick_deleted(link, chatname):
+async def kick_all_users(link, chatname, session, api_id, api_hash):
     # Вступление в чат
     try:
         link = link.split('https://t.me/')[1]
         link = link.replace('+', '')
         client = TelegramClient(
-            session='79267450398',
-            api_id=2040,
-            api_hash='b18441a1ff607e10a989891a5462e627'
+            session=session,
+            api_id=api_id,
+            api_hash=api_hash
         )
         await client.start()
         return await client(ImportChatInviteRequest(link))
@@ -38,4 +38,30 @@ async def kick_deleted(link, chatname):
 
     a = await client.delete_dialog(chat_id)
     await client.disconnect()
-    return (deleted_users)
+    # return (deleted_users)
+
+
+async def delete_all_messages(link, chatname, session, api_id, api_hash):
+    """
+
+    :param link:
+    :param chatname:
+    :param session:
+    :param api_id:
+    :param api_hash:
+    :return:
+    """
+
+    # Вступление в чат
+    try:
+        link = link.split('https://t.me/')[1]
+        link = link.replace('+', '')
+        client = TelegramClient(
+            session=session,
+            api_id=api_id,
+            api_hash=api_hash
+        )
+        await client.start()
+        return await client(ImportChatInviteRequest(link))
+    except:
+        pass
