@@ -16,6 +16,12 @@ session = '79267450398'
 api_id = '2040'
 api_hash = 'b18441a1ff607e10a989891a5462e627'
 
+"""
+username: GrootNederlands88, user_id: 1269197191
+username: getnewtg, user_id: 183565835
+username: ivkrak, user_id: 351162658
+ADMIN username: None, user_id: 1822295368
+"""
 
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
