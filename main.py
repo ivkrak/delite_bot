@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
-from telethon import TelegramClient
+from telethon import TelegramClient, functions
 from aiogram import Bot, Dispatcher, executor, types
+from telethon.tl.functions.messages import ImportChatInviteRequest
+
 from userbot import kick_all_users
 
 # system("title Kick User")
@@ -30,13 +32,26 @@ async def help(message: types.Message):
         chatid = message.chat.id
         expire_date = datetime.now() + timedelta(days=3)
         link = await bot.create_chat_invite_link(chatid, expire_date, 3)
-        print(f'{link=}')
+        link = link.invite_link.strip('https://t.me/+')
+        print(link)
         chat = await bot.get_chat(chatid)
         chat_title = chat.title
         await client.start()
+        try:
+            await client(ImportChatInviteRequest(link))
+        except: pass
+        me = await client.get_me()
         await client.send_message(chatid, 'Вступил для администрирования группы')
-    except:
-        await message.answer('')
+        await bot.promote_chat_member(
+            chat_id=chatid,
+            user_id=me.id,
+            can_manage_chat=True,
+            can_delete_messages=True,
+            can_invite_users=True,
+            can_pin_messages=True
+        )
+    except Exception as ex:
+        await message.answer(ex)
 
     await message.answer(
         '''
@@ -63,7 +78,7 @@ async def checkAdmin(message: types.Message):
     if is_admin:  # юзер админ
 
         await message.answer('Ты админ')
-        print(message.chat.title)
+    else: await message.answer('Ты не админ')
 
 
 @dp.message_handler(commands=['kick_all_users'])
@@ -83,7 +98,6 @@ async def delete_users(message: types.Message):
         expire_date = datetime.now() + timedelta(days=3)
         link = await bot.create_chat_invite_link(chatid, expire_date, 3)
         invite_link = link.invite_link
-        print(f'{link=}')
         chat = await bot.get_chat(chatid)
         chat_title = chat.title
         await kick_all_users(invite_link, chat_title, session, api_id, api_hash)
@@ -97,6 +111,7 @@ async def delete_messages(message: types.Message):
     # удалите все сообщения в группе
     for message_in_chat in messages:
         await client.delete_messages(message.chat.title, [message_in_chat])
+    await client(functions.channels.LeaveChannelRequest(message.chat.id))
 
 
 @dp.message_handler(commands=['delete_banned_users'])
@@ -106,3 +121,5 @@ async def checkAdmin(message: types.Message):
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
+
+

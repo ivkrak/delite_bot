@@ -1,0 +1,31 @@
+{
+    "app_hash": "b8c264a8b3e9ffb53b9024d98a08ea7e",
+    "app_id": 133612,
+    "app_version": "8.2.7",
+    "avatar": "img\/default.png",
+    "block": false,
+    "blocked_untile": "",
+    "device": "Huawei nova 3",
+    "first_name": "Livio",
+    "ipv6": false,
+    "lang_pack": "fr",
+    "last_check_time": 1676632925,
+    "last_name": "Ramos",
+    "layer": 151,
+    "phone": "5561993147129",
+    "proxy": [
+        2,
+        "84.38.189.34",
+        30685,
+        true,
+        null,
+        null
+    ],
+    "register_time": 1676632925,
+    "sdk": "Android 13 (33)",
+    "session_file": "5561993147129",
+    "sex": 1,
+    "system_lang_pack": "uz",
+    "twoFA": "X5yfMUlcvtV2O",
+    "username": null
+}

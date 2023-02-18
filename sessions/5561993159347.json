@@ -1,0 +1,31 @@
+{
+    "app_hash": "7a128dd9dc71b936b3dbbeb9233fcc67",
+    "app_id": 34114,
+    "app_version": "8.4.3",
+    "avatar": "img\/default.png",
+    "block": false,
+    "blocked_untile": "",
+    "device": "Samsung Galaxy S21 Ultra 5G Exynos",
+    "first_name": "Vianney",
+    "ipv6": false,
+    "lang_pack": "en",
+    "last_check_time": 1676632923,
+    "last_name": "Langlais",
+    "layer": 151,
+    "phone": "5561993159347",
+    "proxy": [
+        2,
+        "185.82.216.216",
+        30011,
+        true,
+        null,
+        null
+    ],
+    "register_time": 1676632923,
+    "sdk": "Android 11 (30)",
+    "session_file": "5561993159347",
+    "sex": 1,
+    "system_lang_pack": "is",
+    "twoFA": "8nT4sRCx7vQ",
+    "username": null
+}

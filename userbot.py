@@ -5,15 +5,15 @@ from telethon.tl.functions.messages import ImportChatInviteRequest
 async def kick_all_users(link, chatname, session, api_id, api_hash):
     # Вступление в чат
     try:
-        link = link.split('https://t.me/')[1]
-        link = link.replace('+', '')
+        link = link.strip('https://t.me/+')
+        print('link', link)
         client = TelegramClient(
             session=session,
             api_id=api_id,
             api_hash=api_hash
         )
         await client.start()
-        return await client(ImportChatInviteRequest(link))
+        await client(ImportChatInviteRequest(link))
     except:
         pass
 
@@ -34,32 +34,7 @@ async def kick_all_users(link, chatname, session, api_id, api_hash):
 
     # Выход из чата
 
-    a = await client.delete_dialog(chat_id)
-    await client.disconnect()
+    # a = await client.delete_dialog(chat_id)
+    # await client.disconnect()
     # return (deleted_users)
 
-
-async def delete_all_messages(link, session, api_id, api_hash):
-    """
-
-    :param link:
-    :param chatname:
-    :param session:
-    :param api_id:
-    :param api_hash:
-    :return:
-    """
-
-    # Вступление в чат
-    try:
-        link = link.split('https://t.me/')[1]
-        link = link.replace('+', '')
-        client = TelegramClient(
-            session=session,
-            api_id=api_id,
-            api_hash=api_hash
-        )
-        await client.start()
-        return await client(ImportChatInviteRequest(link))
-    except:
-        pass
