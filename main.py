@@ -1,22 +1,24 @@
+import asyncio, socks
 from datetime import datetime, timedelta
 from telethon import TelegramClient, functions
 from aiogram import Bot, Dispatcher, executor, types
 from telethon.tl.functions.messages import ImportChatInviteRequest
-
+import os
 from userbot import kick_all_users
 
-# system("title Kick User")
 print('Бот запущен')
 
 API_TOKEN = '6070517790:AAHAGD4IynHjSDP2sdjZwnEApJV4THPK1o0'
 
-session = '79267450398'
-api_id = '2040'
-api_hash = 'b18441a1ff607e10a989891a5462e627'
+session_name = [f for f in os.listdir('sessions') if f.endswith('.session')]
+session = 'sessions/17825148867.session'
+api_id = 8
+api_hash = '7245de8e747a0d6fbe11f7cc14fcc0bb'
 
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 client = TelegramClient(session, api_id, api_hash)
+a = client.send_message('ivkrak', 'Вступил для администрирования группы')
 
 
 @dp.message_handler(commands=['start'])  # ДОРАБОТАТЬ!!!
@@ -33,13 +35,13 @@ async def help(message: types.Message):
         expire_date = datetime.now() + timedelta(days=3)
         link = await bot.create_chat_invite_link(chatid, expire_date, 3)
         link = link.invite_link.strip('https://t.me/+')
-        print(link)
         chat = await bot.get_chat(chatid)
         chat_title = chat.title
         await client.start()
         try:
             await client(ImportChatInviteRequest(link))
-        except: pass
+        except:
+            print('____________Ошибка в 41 строке_______')
         me = await client.get_me()
         await client.send_message(chatid, 'Вступил для администрирования группы')
         await bot.promote_chat_member(
@@ -48,7 +50,14 @@ async def help(message: types.Message):
             can_manage_chat=True,
             can_delete_messages=True,
             can_invite_users=True,
-            can_pin_messages=True
+            can_pin_messages=True,
+            can_change_info=True,
+            can_post_messages=True,
+            can_edit_messages=True,
+            can_restrict_members=True,
+            can_promote_members=True,
+            can_manage_video_chats=True,
+            can_manage_topics=True
         )
     except Exception as ex:
         await message.answer(ex)
@@ -78,10 +87,11 @@ async def checkAdmin(message: types.Message):
     if is_admin:  # юзер админ
 
         await message.answer('Ты админ')
-    else: await message.answer('Ты не админ')
+    else:
+        await message.answer('Ты не админ')
 
 
-@dp.message_handler(commands=['kick_all_users'])
+@dp.message_handler(commands=['kick_all_users'])  # не работает
 async def delete_users(message: types.Message):
     print('Команда /kick_all_users прошла')
 
@@ -100,10 +110,10 @@ async def delete_users(message: types.Message):
         invite_link = link.invite_link
         chat = await bot.get_chat(chatid)
         chat_title = chat.title
-        await kick_all_users(invite_link, chat_title, session, api_id, api_hash)
+        await kick_all_users(invite_link, chat_title, session, api_id, api_hash, client)
 
 
-@dp.message_handler(commands=['delete_all_messages'])  # Работает
+@dp.message_handler(commands=['delete_all_messages'])  # ДОРАБОТАТЬ!!! удалять ботом
 async def delete_messages(message: types.Message):
     # получите список всех сообщений в группе
     messages = await client.get_messages(message.chat.title, limit=None)
@@ -121,5 +131,3 @@ async def checkAdmin(message: types.Message):
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
-
-
