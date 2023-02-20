@@ -49,15 +49,12 @@ async def help(message: types.Message):
             user_id=me.id,
             can_manage_chat=True,
             can_delete_messages=True,
-            can_invite_users=True,
             can_pin_messages=True,
             can_change_info=True,
             can_post_messages=True,
             can_edit_messages=True,
             can_restrict_members=True,
-            can_promote_members=True,
-            can_manage_video_chats=True,
-            can_manage_topics=True
+            can_promote_members=True
         )
     except Exception as ex:
         await message.answer(ex)
@@ -113,14 +110,14 @@ async def delete_users(message: types.Message):
         await kick_all_users(invite_link, chat_title, session, api_id, api_hash, client)
 
 
-@dp.message_handler(commands=['delete_all_messages'])  # ДОРАБОТАТЬ!!! удалять ботом
-async def delete_messages(message: types.Message):
+@dp.message_handler(commands=['delete_all_messages'])  # Готово, сообщения удаляются ботом
+async def delete_messages(message: types.Message):     # для увеличения скорости
     # получите список всех сообщений в группе
     messages = await client.get_messages(message.chat.title, limit=None)
 
     # удалите все сообщения в группе
     for message_in_chat in messages:
-        await client.delete_messages(message.chat.title, [message_in_chat])
+        await message.bot.delete_message(chat_id=message.chat.id, message_id=message_in_chat.id)
     await client(functions.channels.LeaveChannelRequest(message.chat.id))
 
 
