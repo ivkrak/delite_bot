@@ -1,4 +1,3 @@
-import asyncio, socks
 from datetime import datetime, timedelta
 from telethon import TelegramClient, functions
 from aiogram import Bot, Dispatcher, executor, types
@@ -41,7 +40,7 @@ async def help(message: types.Message):
         try:
             await client(ImportChatInviteRequest(link))
         except:
-            print('____________Ошибка в 41 строке_______')
+            await message.answer('Бот готов для администрирования группы')
         me = await client.get_me()
         await client.send_message(chatid, 'Вступил для администрирования группы')
         await bot.promote_chat_member(
@@ -117,7 +116,10 @@ async def delete_messages(message: types.Message):     # для увеличен
 
     # удалите все сообщения в группе
     for message_in_chat in messages:
-        await message.bot.delete_message(chat_id=message.chat.id, message_id=message_in_chat.id)
+        # Пробует удалить при помощи бота, при появлении ошибки, удаляет при помощи телетон акка
+        try:
+            await message.bot.delete_message(chat_id=message.chat.id, message_id=message_in_chat.id)
+        except: await client.delete_messages(message.chat.title, [message_in_chat])
     await client(functions.channels.LeaveChannelRequest(message.chat.id))
 
 

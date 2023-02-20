@@ -1,0 +1,31 @@
+{
+    "app_hash": "b6b154c3707471f5339bd661645ed3d6",
+    "app_id": 1,
+    "app_version": "8.5.0",
+    "avatar": "null",
+    "block": false,
+    "blocked_untile": "",
+    "device": "Oppo K3",
+    "first_name": "Marc",
+    "ipv6": false,
+    "lang_pack": "lo",
+    "last_check_time": 1676706299,
+    "last_name": "Dubuc",
+    "layer": 151,
+    "phone": "6285759600293",
+    "proxy": [
+        2,
+        "151.106.31.209",
+        30153,
+        true,
+        null,
+        null
+    ],
+    "register_time": 1676706299,
+    "sdk": "Android 12 (31)",
+    "session_file": "6285759600293",
+    "sex": 1,
+    "system_lang_pack": "ja",
+    "twoFA": "yxZ9iVe60jz7RhrU",
+    "username": null
+}

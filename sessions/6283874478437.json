@@ -1,0 +1,29 @@
+{
+    "app_hash": "eb06d4abfb49dc3eeb1aeb98ae0f581e",
+    "app_id": 6,
+    "app_version": "8.7.3",
+    "avatar": "null",
+    "device": "LG V40 ThinQ",
+    "first_name": "Hikmah Eliza",
+    "ipv6": false,
+    "lang_pack": "el",
+    "last_check_time": 1664764512,
+    "last_name": null,
+    "layer": 151,
+    "phone": "6283874478437",
+    "proxy": [
+        2,
+        "proxy.froxy.com",
+        9095,
+        true,
+        "76cOGpLSpjzCxmm7",
+        "wifi;id;;;"
+    ],
+    "register_time": 1664764512,
+    "sdk": "Android 12L (32)",
+    "session_file": "6283874478437",
+    "sex": "0",
+    "system_lang_pack": "is",
+    "twoFA": "HB2D7PSqLgtzCkfhR",
+    "username": null
+}

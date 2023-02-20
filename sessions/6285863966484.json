@@ -1,0 +1,31 @@
+{
+    "app_hash": "b6b154c3707471f5339bd661645ed3d6",
+    "app_id": 1,
+    "app_version": "9.0.1",
+    "avatar": "null",
+    "block": false,
+    "blocked_untile": "",
+    "device": "Motorola Moto G9 Play",
+    "first_name": "Aymane",
+    "ipv6": false,
+    "lang_pack": "ko",
+    "last_check_time": 1676706258,
+    "last_name": "Bouton",
+    "layer": 151,
+    "phone": "6285863966484",
+    "proxy": [
+        2,
+        "proxy.froxy.com",
+        9007,
+        true,
+        "76cOGpLSpjzCxmm7",
+        "wifi;ca;;;"
+    ],
+    "register_time": 1676706258,
+    "sdk": "Android 10 (29)",
+    "session_file": "6285863966484",
+    "sex": 1,
+    "system_lang_pack": "sl",
+    "twoFA": "tDPs3bRI8hxMNlS2ejB9T1fq",
+    "username": null
+}
