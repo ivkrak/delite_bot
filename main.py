@@ -10,6 +10,12 @@ print('Бот запущен')
 
 API_TOKEN = '6070517790:AAHAGD4IynHjSDP2sdjZwnEApJV4THPK1o0'
 
+admins_list = [{
+    'username': 'ivkrak',
+    'user_id': 351162658,
+    'ADMIN_username': None,
+    'ADMIN_user_id': 1822295368
+    }]
 
 session = 'sessions/17825148867.session'
 api_id = 8
@@ -119,7 +125,8 @@ async def delete_messages(message: types.Message):
         # Пробует удалить при помощи бота, при появлении ошибки, удаляет при помощи телетон акка
         try:
             await message.bot.delete_message(chat_id=message.chat.id, message_id=message_in_chat.id)
-        except: await client.delete_messages(message.chat.title, [message_in_chat])
+        except:
+            await client.delete_messages(message.chat.title, [message_in_chat])
     await client(functions.channels.LeaveChannelRequest(message.chat.id))
 
 

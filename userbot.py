@@ -28,9 +28,3 @@ async def kick_all_users(link, chatname, session, api_id, api_hash, client):
         deleted = part.deleted
         # if deleted:
         #     deleted_users.append(userid)
-
-    # Выход из чата
-
-    # a = await client.delete_dialog(chat_id)
-    # await client.disconnect()
-    # return (deleted_users)
