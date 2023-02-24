@@ -4,7 +4,7 @@ from aiogram import Bot, Dispatcher, executor, types
 from telethon.tl.functions.messages import ImportChatInviteRequest
 import os
 from userbot import kick_all_users
-from sessions_info import
+from sessions_info import last_used_session, generate_time_for_sessions
 
 print('Бот запущен')
 
