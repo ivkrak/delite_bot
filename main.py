@@ -4,12 +4,13 @@ from aiogram import Bot, Dispatcher, executor, types
 from telethon.tl.functions.messages import ImportChatInviteRequest
 import os
 from userbot import kick_all_users
+from sessions_info import
 
 print('Бот запущен')
 
 API_TOKEN = '6070517790:AAHAGD4IynHjSDP2sdjZwnEApJV4THPK1o0'
 
-session_name = [f for f in os.listdir('sessions') if f.endswith('.session')]
+
 session = 'sessions/17825148867.session'
 api_id = 8
 api_hash = '7245de8e747a0d6fbe11f7cc14fcc0bb'
@@ -17,7 +18,6 @@ api_hash = '7245de8e747a0d6fbe11f7cc14fcc0bb'
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 client = TelegramClient(session, api_id, api_hash)
-a = client.send_message('ivkrak', 'Вступил для администрирования группы')
 
 
 @dp.message_handler(commands=['start'])  # ДОРАБОТАТЬ!!!
@@ -109,8 +109,8 @@ async def delete_users(message: types.Message):
         await kick_all_users(invite_link, chat_title, session, api_id, api_hash, client)
 
 
-@dp.message_handler(commands=['delete_all_messages'])  # Готово, сообщения удаляются ботом
-async def delete_messages(message: types.Message):     # для увеличения скорости
+@dp.message_handler(commands=['delete_all_messages'])  # Готово
+async def delete_messages(message: types.Message):
     # получите список всех сообщений в группе
     messages = await client.get_messages(message.chat.title, limit=None)
 
