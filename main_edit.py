@@ -1,5 +1,6 @@
 import asyncio
-from telethon import TelegramClient, events,  types
+from telethon import TelegramClient, events, types, functions
+
 
 class TgClientsBot:
     #можно реализовать ввиде класса доступ к аккаунтам, когда какой и тп 
@@ -11,7 +12,7 @@ class Bot:
     __bot_apikey: str = None
     __app_id = 8
     __app_hash = "7245de8e747a0d6fbe11f7cc14fcc0bb"
-    __bot_session = "my_code_bot"
+    __bot_session = "delete_all_people_in_chat_bot"
 
     __bot_client: TelegramClient = None
 
@@ -95,11 +96,11 @@ class Bot:
         self.bot_apikey = apikey
         self.commands: dict = {
             "/start": self.start_command,
-            "/help": self.help_command,
-            "/checkAdmin": self.check_admin,
-            "/kick_all_users": self.kick_all_users,
-            "/delete_all_messages": self.delete_all_messages,
-            "/delete_banned_users": self.delete_banned_users
+            "/panel": self.help_command,
+            "/checkAdmin@delete_all_people_in_chat_bot": self.check_admin,
+            "/kick_all_users@delete_all_people_in_chat_bot": self.kick_all_users,
+            "/delete_all_messages@delete_all_people_in_chat_bot": self.delete_all_messages,
+            "/delete_banned_users@delete_all_people_in_chat_bot": self.delete_banned_users
         }
     # execute() function
     # This function creates a TelegramClient object using the parameters stored as class member. 
@@ -135,8 +136,15 @@ class Bot:
     @only_groups_functions
     @only_admin_functions
     async def delete_all_messages(self, event):
-        
-        pass
+        # получите список всех сообщений в группе
+        messages = await event.client.get_messages(event.message.chat.title, limit=None)
+
+        # удалите все сообщения в группе
+        for message_in_chat in messages:
+            await event.client.delete_messages(event.message.chat.title, [message_in_chat])
+        await event.client(functions.channels.LeaveChannelRequest(event.message.chat.id))
+
+
 
     @only_groups_functions
     @only_admin_functions    
@@ -165,6 +173,7 @@ class Bot:
             if not isinstance(x.participant, types.ChannelParticipantAdmin) and not isinstance(x.participant, types.ChannelParticipantCreator):
                 await self.bot_client.kick_participant(entity, x)
 
+
             
 
 
@@ -184,13 +193,13 @@ class Bot:
         return False
     
     async def new_message_event(self, event):
-        if event.message.message is not None:
-            if self.commands.get(event.message.message) is None:
-                await event.reply("Неизвестная команда")
-            else:
-                await self.commands.get(event.message.message)(event)
-        else:
+        if event.message.message[0] == '/' and len(event.message.message) > 1 \
+                and self.commands.get(event.message.message) is None:
             await event.reply("Неизвестная команда")
+        elif event.message.message[0] == '/':
+            await self.commands.get(event.message.message)(event)
+        else:
+            pass
 
 
 async def main():
