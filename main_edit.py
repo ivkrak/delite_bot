@@ -1,14 +1,67 @@
 import asyncio
+import json
+import os
+from time import time
+from datetime import datetime, timedelta
 from telethon import TelegramClient, events, types, functions
+from telethon.tl.functions.messages import ImportChatInviteRequest
 
 
 class TgClientsBot:
-    #можно реализовать ввиде класса доступ к аккаунтам, когда какой и тп 
+    # можно реализовать в виде класса доступ к аккаунтам, когда какой и тп
     pass
 
 
-class Bot:
+class Sessions:
+    @staticmethod
+    async def generate_time_for_sessions(none) -> None:
+        """
+        Генерирует json'ы с временем последнего использования для сессий
+        """
+        session_names = [f.replace('.session', '') for f in os.listdir('sessions') if f.endswith('.session')]
+        for session_name in session_names:
+            with open(f'sessions/{session_name}_time.json', 'w') as f:
+                time_info = {"session_name": session_name, "used_at": time()}
+                json.dump(time_info, f)
 
+    @staticmethod
+    def last_used_session(none) -> dict:
+        """
+        Первый аргумент: имя самой отлежавшейся сессии
+        Второй аргумент: список сессий с названием сессии и последним её использованием
+        """
+        session_names = [f.replace('.session', '') for f in os.listdir('sessions') if f.endswith('.session')]
+        sessions_data = []
+        for session_name in session_names:
+            with open(f'sessions/{session_name}_time.json') as f:
+                sessions_data.append(json.load(f))
+        with open('shit.json', 'w') as f:
+            json.dump(sessions_data, f)
+        last_used_session = {}
+        min = sessions_data[0]['used_at']
+        for i in sessions_data:
+            if i['used_at'] <= min:
+                min = i['used_at']
+                last_used_session = i['session_name']
+        with open(f'sessions/{last_used_session}_time.json', 'w') as f:
+            time_info = {"session_name": last_used_session, "used_at": time()}
+            json.dump(time_info, f)
+
+        with open(f'sessions/{last_used_session}.json') as f:
+            session_data = json.load(f)
+
+        data = {
+            'api_id': session_data['app_id'],
+            'api_hash': session_data['app_hash'],
+            'session_name': session_data['phone']
+        }
+        return data
+
+    def get_client(self) -> TelegramClient:
+        pass
+
+
+class Bot:
     __bot_apikey: str = None
     __app_id = 8
     __app_hash = "7245de8e747a0d6fbe11f7cc14fcc0bb"
@@ -26,7 +79,7 @@ class Bot:
             TelegramClient instance
         """
         return self.__bot_client
-    
+
     @bot_client.setter
     def bot_client(self, client: TelegramClient):
         """
@@ -39,8 +92,7 @@ class Bot:
         if not client.is_connected():
             raise Exception("Connect client first")
         self.__bot_client = client
-    
-    
+
     # bot_apikey property
     @property
     def bot_apikey(self) -> str:
@@ -50,7 +102,7 @@ class Bot:
             str: The API Key.
         """
         return self.__bot_apikey
-    
+
     @bot_apikey.setter
     def bot_apikey(self, data):
         """
@@ -69,6 +121,7 @@ class Bot:
         Decorator used to check if a user is admin of the current chat. 
         If the sender is not admin, a message will be sent in response informing the user
         """
+
         async def inner(self, event):
             sender = await event.get_sender()
             if not await self.check_user_admin(event.chat, sender.id):
@@ -82,6 +135,7 @@ class Bot:
         """
         Decorator used to check if a command written in private chat. 
         """
+
         # Do not allow the command to be used in private chat
         def inner(self, event):
             if event.is_private:
@@ -100,8 +154,10 @@ class Bot:
             "/checkAdmin@delete_all_people_in_chat_bot": self.check_admin,
             "/kick_all_users@delete_all_people_in_chat_bot": self.kick_all_users,
             "/delete_all_messages@delete_all_people_in_chat_bot": self.delete_all_messages,
-            "/delete_banned_users@delete_all_people_in_chat_bot": self.delete_banned_users
+            "/delete_banned_users@delete_all_people_in_chat_bot": self.delete_banned_users,
+            "/generate_time_from_sessions": Sessions.generate_time_for_sessions
         }
+
     # execute() function
     # This function creates a TelegramClient object using the parameters stored as class member. 
     # It then registers an event handler for incoming messages and starts a loop that runs until the client disconnects. 
@@ -136,18 +192,52 @@ class Bot:
     @only_groups_functions
     @only_admin_functions
     async def delete_all_messages(self, event):
+
+        data = Sessions.last_used_session(None)
+        client = TelegramClient(
+            session=data['session_name'],
+            api_id=data['api_id'],
+            api_hash=data['api_hash']
+        )
+
+        try:
+            chatid = event.message.chat.id
+            expire_date = datetime.now() + timedelta(days=3)
+            link = await event.exportChatInviteLink(event.message.chat, expire_date, 3)
+            link = link.invite_link.strip('https://t.me/+')
+            chat = await event.get_chat(chatid)
+            chat_title = chat.title
+            client.start()
+            try:
+                await client(ImportChatInviteRequest(link))
+            except:
+                pass
+            me = await client.get_me()
+            await client.send_message(chatid, 'Вступил для администрирования группы')
+            await event.promote_chat_member(
+                chat_id=chatid,
+                user_id=me.id,
+                can_manage_chat=True,
+                can_delete_messages=True,
+                can_pin_messages=True,
+                can_change_info=True,
+                can_post_messages=True,
+                can_edit_messages=True,
+                can_restrict_members=True,
+                can_promote_members=True
+            )
+        except Exception as ex:
+            print(f'{"_"*10}\n{ex}\n{"_"*10}')
         # получите список всех сообщений в группе
-        messages = await event.client.get_messages(event.message.chat.title, limit=None)
+        messages = await client.get_messages(
+            event.message.chat.id, limit=None)
 
-        # удалите все сообщения в группе
-        for message_in_chat in messages:
-            await event.client.delete_messages(event.message.chat.title, [message_in_chat])
-        await event.client(functions.channels.LeaveChannelRequest(event.message.chat.id))
-
-
+        async for message_in_chat in messages:
+            await client.delete_messages(event.message.chat.title, [message_in_chat])
+        await client(functions.channels.LeaveChannelRequest(event.message.chat.id))
 
     @only_groups_functions
-    @only_admin_functions    
+    @only_admin_functions
     async def delete_banned_users(self, event):
         """
             This function checks for users who have been banned and removed their
@@ -156,27 +246,21 @@ class Bot:
             is set to False.
         """
         entity = event.chat
-        #Доработать так как лимит на 10к юзеров проверять есть ли еще кого удалять
+        # Доработать так как лимит на 10к юзеров проверять есть ли еще кого удалять
         async for x in self.bot_client.iter_participants(entity):
             if x.deleted:
-                await self.bot_client.edit_permissions(entity, x, view_messages = False)
-
-        
+                await self.bot_client.edit_permissions(entity, x, view_messages=False)
 
     @only_groups_functions
     @only_admin_functions
     async def kick_all_users(self, event):
-        """Kick all Non-Admin users from the chat""" 
+        """Kick all Non-Admin users from the chat"""
         entity = event.chat
-        #Доработать так как лимит на 10к юзеров проверять есть ли еще кого удалять
+        # Доработать так как лимит на 10к юзеров проверять есть ли еще кого удалять
         async for x in self.bot_client.iter_participants(entity):
-            if not isinstance(x.participant, types.ChannelParticipantAdmin) and not isinstance(x.participant, types.ChannelParticipantCreator):
+            if not isinstance(x.participant, types.ChannelParticipantAdmin) and not isinstance(x.participant,
+                                                                                               types.ChannelParticipantCreator):
                 await self.bot_client.kick_participant(entity, x)
-
-
-            
-
-
 
     @only_groups_functions
     async def check_admin(self, event):
@@ -191,7 +275,7 @@ class Bot:
             if user_id == x.id:
                 return True
         return False
-    
+
     async def new_message_event(self, event):
         if event.message.message[0] == '/' and len(event.message.message) > 1 \
                 and self.commands.get(event.message.message) is None:
@@ -205,6 +289,7 @@ class Bot:
 async def main():
     bot = Bot("6070517790:AAHAGD4IynHjSDP2sdjZwnEApJV4THPK1o0")
     await bot.execute()
+
 
 if __name__ == '__main__':
     asyncio.run(main())
