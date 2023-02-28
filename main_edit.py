@@ -35,8 +35,6 @@ class Sessions:
         for session_name in session_names:
             with open(f'sessions/{session_name}_time.json') as f:
                 sessions_data.append(json.load(f))
-        with open('shit.json', 'w') as f:
-            json.dump(sessions_data, f)
         last_used_session = {}
         min = sessions_data[0]['used_at']
         for i in sessions_data:
