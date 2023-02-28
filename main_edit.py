@@ -195,7 +195,7 @@ class Bot:
 
         data = Sessions.last_used_session(None)
         client = TelegramClient(
-            session=data['session_name'],
+            session=f'sessions/{data["session_name"]}.session',
             api_id=data['api_id'],
             api_hash=data['api_hash']
         )
