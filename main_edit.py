@@ -1,15 +1,12 @@
 import asyncio
 import json
 import os
+from pathlib import Path
 from time import time
 from datetime import datetime, timedelta
-from telethon import TelegramClient, events, types, functions
+from telethon import TelegramClient, events, types, functions, errors
 from telethon.tl.functions.messages import ImportChatInviteRequest
-
-
-class TgClientsBot:
-    # можно реализовать в виде класса доступ к аккаунтам, когда какой и тп
-    pass
+from threading import Lock
 
 
 class Sessions:
@@ -18,42 +15,166 @@ class Sessions:
         """
         Генерирует json'ы с временем последнего использования для сессий
         """
-        session_names = [f.replace('.session', '') for f in os.listdir('sessions') if f.endswith('.session')]
+        session_names = [f.replace('.session', '') for f in os.listdir(
+            'sessions') if f.endswith('.session')]
         for session_name in session_names:
             with open(f'sessions/{session_name}_time.json', 'w') as f:
                 time_info = {"session_name": session_name, "used_at": time()}
                 json.dump(time_info, f)
 
+    FILENAME = "sessions/time.json"
+    LOCKER = Lock()
+
     @staticmethod
-    def last_used_session(none) -> dict:
+    def prepare_group(group: str) -> tuple[bool, str]:
+        """Clean entity from url
+
+        Args:
+            group (str): chat url
+
+        Returns:
+            tuple[bool, str]: private or public link, clean link
+        """
+        group = group.replace("/+", "/joinchat/")
+        isPrivate = 'joinchat/' in group
+        preaperGroupVal = group.replace('https://', '').replace("http://", "").replace(
+            't.me/', '').replace('joinchat/', '').replace('@', '').replace('/', '')
+        return isPrivate, preaperGroupVal
+
+    @staticmethod
+    async def join_to_chat(link: str, account: TelegramClient):
+        """ raise  (NextRecepient,  NextAccount)"""
+        private, cleanGroup = Sessions.prepare_group(link)
+        chatEntity = None
+        try:
+            if not private:
+                chatEntity = await account(functions.channels.JoinChannelRequest(cleanGroup))
+            else:
+                chatEntity = await account(functions.messages.ImportChatInviteRequest(cleanGroup))
+        except errors.UserAlreadyParticipantError:
+            chatEntity = await account(functions.messages.CheckChatInviteRequest(hash=cleanGroup))
+
+        except (errors.UserDeactivatedBanError):
+            return None
+        except errors.ChannelsTooMuchError as e:
+            return None
+        except (errors.ChatIdInvalidError):
+            return None
+        except errors.ChannelPrivateError:
+            return None
+        except (errors.InviteHashEmptyError, errors.InviteHashExpiredError, errors.InviteHashInvalidError):
+            return None
+        except (errors.FloodWaitError, errors.PeerFloodError, errors.FloodError) as err:
+            return None
+
+        except (errors.UsernameInvalidError, ValueError):
+            return None
+        except (errors.UserDeactivatedError, errors.AuthKeyDuplicatedError, errors.UserDeactivatedBanError) as err:
+            return None
+        except Exception as e:
+            return None
+
+        resultEntity = None
+        if isinstance(chatEntity, types.ChatInviteAlready):
+            resultEntity = chatEntity.chat
+
+        elif isinstance(chatEntity, types.Updates) or (isinstance(chatEntity, types.messages.ChatFull) and not isinstance(chatEntity, types.ChatInviteAlready)):
+            resultEntity = chatEntity.chats[0]
+
+        return resultEntity
+
+    @staticmethod
+    def get_telegram_client() -> TelegramClient:
+        data = Sessions.last_used_session()
+        return TelegramClient(session=data['session_name'],
+                              api_id=data['api_id'],
+                              api_hash=data['api_hash'])
+
+    @staticmethod
+    async def connect_account()->TelegramClient:
+        data = Sessions.last_used_session()
+        if data is None:
+            print("Не осталось живых акков")
+        phone=f"sessions//{data['session_name']}"
+        client = TelegramClient(session=phone,
+                              api_id=data['api_id'],
+                              api_hash=data['api_hash'])
+        await client.connect()
+        if not await client.is_user_authorized():
+            await client.disconnect()
+            Sessions.delete_account_from_list(data['session_name'])
+            return await Sessions.connect_account()
+        return client
+
+
+    @staticmethod
+    def delete_account_from_list(phone):
+        Sessions.LOCKER.acquire()
+        try:
+            with open(Sessions.FILENAME, "r") as f:
+                data = json.load(f)
+            if data.get(phone) is not None:
+                del data[phone]
+            with open(Sessions.FILENAME, "w") as f:
+                json.dump(data, f)
+            try:
+                os.remove(f"sessions//{phone}.json")
+                os.remove(f"sessions//{phone}.session")
+            except Exception as e:
+                print(e)
+        finally:
+            Sessions.LOCKER.release()
+
+    @staticmethod
+    def get_account_alive(timespan):
+        dt_object = datetime.fromtimestamp(timespan)
+        return datetime.now() - dt_object
+
+    @staticmethod
+    def last_used_session() -> dict:
         """
         Первый аргумент: имя самой отлежавшейся сессии
         Второй аргумент: список сессий с названием сессии и последним её использованием
         """
-        session_names = [f.replace('.session', '') for f in os.listdir('sessions') if f.endswith('.session')]
-        sessions_data = []
-        for session_name in session_names:
-            with open(f'sessions/{session_name}_time.json') as f:
-                sessions_data.append(json.load(f))
-        last_used_session = {}
-        min = sessions_data[0]['used_at']
-        for i in sessions_data:
-            if i['used_at'] <= min:
-                min = i['used_at']
-                last_used_session = i['session_name']
-        with open(f'sessions/{last_used_session}_time.json', 'w') as f:
-            time_info = {"session_name": last_used_session, "used_at": time()}
-            json.dump(time_info, f)
+        Sessions.LOCKER.acquire()
+        session_names = [f.name.replace('.session', '')
+                         for f in Path('sessions').glob("*.session")]
+        if len(session_names) == 0:
+            return None 
+        sessions_data = {}
+        if not os.path.exists(Sessions.FILENAME):
+            for x in session_names:
+                sessions_data[x] = int(time())
+            with open(Sessions.FILENAME, "w") as f:
+                json.dump(sessions_data, f)
+        else:
+            with open(Sessions.FILENAME, "r") as f:
+                sessions_data = json.load(f)
+        try:
+            min_phone = list(sessions_data.keys())[0]
+            min_value = sessions_data[min_phone]
+            for x, y in sessions_data.items():
+                if min_value > y:
+                    min_phone = x
+                    min_value = y
 
-        with open(f'sessions/{last_used_session}.json') as f:
-            session_data = json.load(f)
+            sessions_data[min_phone] = int(time())
+            with open(Sessions.FILENAME, "w") as f:
+                json.dump(sessions_data, f)
 
-        data = {
-            'api_id': session_data['app_id'],
-            'api_hash': session_data['app_hash'],
-            'session_name': session_data['phone']
-        }
-        return data
+            with open(f'sessions/{min_phone}.json') as f:
+                session_json = json.load(f)
+
+            data = {
+                'api_id': session_json['app_id'],
+                'api_hash': session_json['app_hash'],
+                'session_name': session_json['phone']
+            }
+            return data
+        except Exception as e:
+            print(e)
+        finally:
+            Sessions.LOCKER.release()
 
     def get_client(self) -> TelegramClient:
         pass
@@ -146,24 +267,27 @@ class Bot:
 
     def __init__(self, apikey) -> None:
         self.bot_apikey = apikey
+        self.bot_client_username = ""
         self.commands: dict = {
             "/start": self.start_command,
             "/panel": self.help_command,
-            "/checkAdmin@delete_all_people_in_chat_bot": self.check_admin,
-            "/kick_all_users@delete_all_people_in_chat_bot": self.kick_all_users,
-            "/delete_all_messages@delete_all_people_in_chat_bot": self.delete_all_messages,
-            "/delete_banned_users@delete_all_people_in_chat_bot": self.delete_banned_users,
+            "/checkAdmin": self.check_admin,
+            "/kick_all_users": self.kick_all_users,
+            "/delete_all_messages": self.delete_all_messages,
+            "/delete_banned_users": self.delete_banned_users,
             "/generate_time_from_sessions": Sessions.generate_time_for_sessions
         }
 
     # execute() function
-    # This function creates a TelegramClient object using the parameters stored as class member. 
-    # It then registers an event handler for incoming messages and starts a loop that runs until the client disconnects. 
+    # This function creates a TelegramClient object using the parameters stored as class member.
+    # It then registers an event handler for incoming messages and starts a loop that runs until the client disconnects.
     async def execute(self):
 
         t = TelegramClient(self.__bot_session, self.__app_id, self.__app_hash)
         self.bot_client = await t.start(bot_token=self.bot_apikey)
-
+        bot_ent = await t.get_me()
+        self.bot_client_username = bot_ent.username
+ 
         self.bot_client.add_event_handler(
             self.new_message_event, events.NewMessage(outgoing=False, incoming=True))
 
@@ -187,52 +311,60 @@ class Bot:
             '''
         )
 
+    async def get_chat_link(self, chat) -> str:
+        if chat.username is not None:
+            return chat.username
+        else:
+            expire_date = datetime.now() + timedelta(days=3)
+            link = await self.bot_client(functions.messages.ExportChatInviteRequest(chat, True, False, expire_date, 3, "our bot"))
+            return link.link
+
     @only_groups_functions
     @only_admin_functions
     async def delete_all_messages(self, event):
 
-        data = Sessions.last_used_session(None)
-        client = TelegramClient(
-            session=f'sessions/{data["session_name"]}.session',
-            api_id=data['api_id'],
-            api_hash=data['api_hash']
-        )
-        client.start()
+        client = await Sessions.connect_account()
+
         try:
-            chatid = event.message.chat.id
-            expire_date = datetime.now() + timedelta(days=3)
-            link = await event.exportChatInviteLink(event.message.chat, expire_date, 3)
-            link = link.invite_link.strip('https://t.me/+')
-            chat = await event.get_chat(chatid)
-            chat_title = chat.title
+            chat = event.chat
+            link = await self.get_chat_link(event.chat)
+
+           
 
             try:
-                await client(ImportChatInviteRequest(link))
+                result = await Sessions.join_to_chat(link, client)
+                if result is None:
+                    raise Exception("ALERT")
             except:
                 pass
+            await client.send_message(self.bot_client_username, "/start")
             me = await client.get_me()
-            await client.send_message(chatid, 'Вступил для администрирования группы')
-            await event.promote_chat_member(
-                chat_id=chatid,
+            result = await self.bot_client(functions.channels.EditAdminRequest(
+                channel=chat.id,
                 user_id=me.id,
-                can_manage_chat=True,
-                can_delete_messages=True,
-                can_pin_messages=True,
-                can_change_info=True,
-                can_post_messages=True,
-                can_edit_messages=True,
-                can_restrict_members=True,
-                can_promote_members=True
-            )
+                admin_rights=types.ChatAdminRights(  
+                    delete_messages=True
+                ),
+                rank=""
+            ))    
+
         except Exception as ex:
             print(f'{"_"*10}\n{ex}\n{"_"*10}')
         # получите список всех сообщений в группе
-        messages = await client.get_messages(
-            event.message.chat.id, limit=None)
+        try:
+            while True:
+                list_msg = await  client.get_messages(chat.id, limit=100)
+                if len(list_msg) <= 3:
+                    break
+                msg_to_delete = [x.id for x in list_msg]
+                await client.delete_messages(chat.id, msg_to_delete, revoke=True) 
+        except Exception as e:
+            print(e)
 
-        async for message_in_chat in messages:
-            await client.delete_messages(event.message.chat.title, [message_in_chat])
-        await client(functions.channels.LeaveChannelRequest(event.message.chat.id))
+        try:
+            await client(functions.channels.LeaveChannelRequest(chat.id))
+        except Exception as e:
+            print(e)
 
     @only_groups_functions
     @only_admin_functions
@@ -275,13 +407,14 @@ class Bot:
         return False
 
     async def new_message_event(self, event):
-        if event.message.message[0] == '/' and len(event.message.message) > 1 \
-                and self.commands.get(event.message.message) is None:
-            await event.reply("Неизвестная команда")
-        elif event.message.message[0] == '/':
-            await self.commands.get(event.message.message)(event)
-        else:
-            pass
+        if event.message.message is not None:
+            
+            if event.message.message[0] == '/' and len(event.message.message) > 1 \
+                    and self.commands.get(event.message.message.split("@")[0]) is not None:
+                await self.commands.get(event.message.message.split("@")[0])(event)
+            else:
+                await event.reply("Неизвестная команда")
+                
 
 
 async def main():
