@@ -197,7 +197,7 @@ class Bot:
             api_id=data['api_id'],
             api_hash=data['api_hash']
         )
-
+        client.start()
         try:
             chatid = event.message.chat.id
             expire_date = datetime.now() + timedelta(days=3)
@@ -205,7 +205,7 @@ class Bot:
             link = link.invite_link.strip('https://t.me/+')
             chat = await event.get_chat(chatid)
             chat_title = chat.title
-            client.start()
+
             try:
                 await client(ImportChatInviteRequest(link))
             except:
