@@ -10,6 +10,14 @@ from threading import Lock
 
 
 class Sessions:
+
+    # def __init__(self):
+    #     self.Bot_instance = Bot
+    #
+    # def send_message_to_admin_sessions(self):
+    #     self.Bot_instance.send_message_to_admin()
+
+
     @staticmethod
     async def generate_time_for_sessions(none) -> None:
         """
@@ -78,7 +86,9 @@ class Sessions:
         if isinstance(chatEntity, types.ChatInviteAlready):
             resultEntity = chatEntity.chat
 
-        elif isinstance(chatEntity, types.Updates) or (isinstance(chatEntity, types.messages.ChatFull) and not isinstance(chatEntity, types.ChatInviteAlready)):
+        elif isinstance(chatEntity, types.Updates) or (
+                isinstance(chatEntity, types.messages.ChatFull) and not isinstance(chatEntity,
+                                                                                   types.ChatInviteAlready)):
             resultEntity = chatEntity.chats[0]
 
         return resultEntity
@@ -91,21 +101,23 @@ class Sessions:
                               api_hash=data['api_hash'])
 
     @staticmethod
-    async def connect_account()->TelegramClient:
+    async def connect_account(self) -> TelegramClient:
         data = Sessions.last_used_session()
         if data is None:
             print("Не осталось живых акков")
-        phone=f"sessions//{data['session_name']}"
+            admins_list = [351162658, 1822295368]  # мой ID,  ID аккаунта Вани
+            for user_id in admins_list:
+                await self.bot_client.send_message(user_id, 'Аккаунты закончились')
+        phone = f"sessions//{data['session_name']}"
         client = TelegramClient(session=phone,
-                              api_id=data['api_id'],
-                              api_hash=data['api_hash'])
+                                api_id=data['api_id'],
+                                api_hash=data['api_hash'])
         await client.connect()
         if not await client.is_user_authorized():
             await client.disconnect()
             Sessions.delete_account_from_list(data['session_name'])
-            return await Sessions.connect_account()
+            return await Sessions.connect_account(self)
         return client
-
 
     @staticmethod
     def delete_account_from_list(phone):
@@ -140,7 +152,7 @@ class Sessions:
         session_names = [f.name.replace('.session', '')
                          for f in Path('sessions').glob("*.session")]
         if len(session_names) == 0:
-            return None 
+            return None
         sessions_data = {}
         if not os.path.exists(Sessions.FILENAME):
             for x in session_names:
@@ -271,7 +283,7 @@ class Bot:
         self.commands: dict = {
             "/start": self.start_command,
             "/panel": self.help_command,
-            "/checkAdmin": self.check_admin,
+            "/checkadmin": self.check_admin,
             "/kick_all_users": self.kick_all_users,
             "/delete_all_messages": self.delete_all_messages,
             "/delete_banned_users": self.delete_banned_users,
@@ -287,7 +299,7 @@ class Bot:
         self.bot_client = await t.start(bot_token=self.bot_apikey)
         bot_ent = await t.get_me()
         self.bot_client_username = bot_ent.username
- 
+
         self.bot_client.add_event_handler(
             self.new_message_event, events.NewMessage(outgoing=False, incoming=True))
 
@@ -296,6 +308,9 @@ class Bot:
     async def start_command(self, event):
         sender = await event.get_sender()
         await event.reply(f'Ваш username: {sender.username}\nВаш юзер id: {sender.id}')
+
+    def get_client(self):
+        return self.t
 
     @only_groups_functions
     async def help_command(self, event):
@@ -307,7 +322,7 @@ class Bot:
             * Удаления всех сообщений в группе /delete_all_messages
             * Удаление только заблокированных пользователей /delete_banned_users
             
-            Чтобы узнать, есть ли у вас права администратора, нажмите /checkAdmin
+            Чтобы узнать, есть ли у вас права администратора, нажмите /checkadmin
             '''
         )
 
@@ -316,20 +331,19 @@ class Bot:
             return chat.username
         else:
             expire_date = datetime.now() + timedelta(days=3)
-            link = await self.bot_client(functions.messages.ExportChatInviteRequest(chat, True, False, expire_date, 3, "our bot"))
+            link = await self.bot_client(
+                functions.messages.ExportChatInviteRequest(chat, True, False, expire_date, 3, "our bot"))
             return link.link
 
     @only_groups_functions
     @only_admin_functions
     async def delete_all_messages(self, event):
 
-        client = await Sessions.connect_account()
+        client = await Sessions.connect_account(self)
 
         try:
             chat = event.chat
             link = await self.get_chat_link(event.chat)
-
-           
 
             try:
                 result = await Sessions.join_to_chat(link, client)
@@ -342,14 +356,14 @@ class Bot:
             result = await self.bot_client(functions.channels.EditAdminRequest(
                 channel=chat.id,
                 user_id=me.id,
-                admin_rights=types.ChatAdminRights(  
+                admin_rights=types.ChatAdminRights(
                     delete_messages=True
                 ),
                 rank=""
-            ))    
+            ))
 
         except Exception as ex:
-            print(f'{"_"*10}\n{ex}\n{"_"*10}')
+            print(f'{"_" * 10}\n{ex}\n{"_" * 10}')
         # получите список всех сообщений в группе
         try:
             while True:
@@ -357,7 +371,7 @@ class Bot:
                 if len(list_msg) <= 3:
                     break
                 msg_to_delete = [x.id for x in list_msg]
-                await client.delete_messages(chat.id, msg_to_delete, revoke=True) 
+                await client.delete_messages(chat.id, msg_to_delete, revoke=True)
         except Exception as e:
             print(e)
 
@@ -408,13 +422,13 @@ class Bot:
 
     async def new_message_event(self, event):
         if event.message.message is not None:
-            
+
             if event.message.message[0] == '/' and len(event.message.message) > 1 \
                     and self.commands.get(event.message.message.split("@")[0]) is not None:
                 await self.commands.get(event.message.message.split("@")[0])(event)
             else:
                 await event.reply("Неизвестная команда")
-                
+
 
 
 async def main():
