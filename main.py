@@ -1,6 +1,7 @@
 import asyncio
 import json
 import os
+import traceback
 from pathlib import Path
 from time import time
 from datetime import datetime, timedelta
@@ -16,7 +17,6 @@ class Sessions:
     #
     # def send_message_to_admin_sessions(self):
     #     self.Bot_instance.send_message_to_admin()
-
 
     @staticmethod
     async def generate_time_for_sessions(none) -> None:
@@ -270,8 +270,6 @@ class Bot:
         # Do not allow the command to be used in private chat
         def inner(self, event):
             if event.is_private:
-                event.reply(
-                    "Эта команда используется только в чатах или канах")
                 return
             return func(self, event)
 
@@ -425,10 +423,12 @@ class Bot:
 
             if event.message.message[0] == '/' and len(event.message.message) > 1 \
                     and self.commands.get(event.message.message.split("@")[0]) is not None:
-                await self.commands.get(event.message.message.split("@")[0])(event)
+                try:
+                    await self.commands.get(event.message.message.split("@")[0])(event)
+                except TypeError:
+                    await event.reply('Эта команда используется только в чатах или канах')
             else:
                 await event.reply("Неизвестная команда")
-
 
 
 async def main():
