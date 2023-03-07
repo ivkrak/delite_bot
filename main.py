@@ -2,6 +2,7 @@ import asyncio
 import json
 import os
 import traceback
+import zipfile
 from pathlib import Path
 from time import time
 from datetime import datetime, timedelta
@@ -21,14 +22,15 @@ class Sessions:
     @staticmethod
     async def generate_time_for_sessions(none) -> None:
         """
-        Генерирует json'ы с временем последнего использования для сессий
+        Генерирует json (time.json) с временем последнего использования для сессий
         """
+        if not os.path.isfile('sessions/time.json'):
+            open('sessions/time.json', 'w').close()
         session_names = [f.replace('.session', '') for f in os.listdir(
             'sessions') if f.endswith('.session')]
-        for session_name in session_names:
-            with open(f'sessions/{session_name}_time.json', 'w') as f:
-                time_info = {"session_name": session_name, "used_at": time()}
-                json.dump(time_info, f)
+        sessions_time = {str(session_name): time() for session_name in session_names}
+        with open('sessions/time.json', 'w') as f:
+            json.dump(sessions_time, f)
 
     FILENAME = "sessions/time.json"
     LOCKER = Lock()
@@ -144,10 +146,6 @@ class Sessions:
 
     @staticmethod
     def last_used_session() -> dict:
-        """
-        Первый аргумент: имя самой отлежавшейся сессии
-        Второй аргумент: список сессий с названием сессии и последним её использованием
-        """
         Sessions.LOCKER.acquire()
         session_names = [f.name.replace('.session', '')
                          for f in Path('sessions').glob("*.session")]
@@ -197,7 +195,7 @@ class Bot:
     __app_id = 8
     __app_hash = "7245de8e747a0d6fbe11f7cc14fcc0bb"
     __bot_session = "delete_all_people_in_chat_bot"
-
+    __admins_user_ids__ = [351162658, 1822295368]
     __bot_client: TelegramClient = None
 
     # bot_client property
@@ -419,7 +417,17 @@ class Bot:
         return False
 
     async def new_message_event(self, event):
-        if event.message.message is not None:
+        if event.message.media and event.is_private:
+            if event.message.peer_id.user_id in self.__admins_user_ids__ and event.message.file.name.endswith(".zip"):
+                file_path = os.path.join('zip_sessions', event.message.file.name)
+                await event.message.download_media(file_path)
+                with zipfile.ZipFile(file_path, 'r') as zip_ref:
+                    zip_ref.extractall('sessions')
+                for f in os.listdir('zip_sessions'):
+                    os.remove(os.path.join('zip_sessions', f))
+                await Sessions.generate_time_for_sessions(None)
+
+        if event.message.message is not None and event.message.message != '':
 
             if event.message.message[0] == '/' and len(event.message.message) > 1 \
                     and self.commands.get(event.message.message.split("@")[0]) is not None:
