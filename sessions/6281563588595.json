@@ -1,0 +1,29 @@
+{
+    "app_hash": "b6b154c3707471f5339bd661645ed3d6",
+    "app_id": 1,
+    "app_version": "9.0.2",
+    "avatar": "null",
+    "device": "Realme 8",
+    "first_name": "Nizar Eka",
+    "ipv6": false,
+    "lang_pack": "id",
+    "last_check_time": 1667123145,
+    "last_name": null,
+    "layer": 151,
+    "phone": "6281563588595",
+    "proxy": [
+        2,
+        "proxy.froxy.com",
+        9150,
+        true,
+        "76cOGpLSpjzCxmm7",
+        "wifi;id;;;"
+    ],
+    "register_time": 1667123145,
+    "sdk": "Android 13 (33)",
+    "session_file": "6281563588595",
+    "sex": "0",
+    "system_lang_pack": "az",
+    "twoFA": "8jyl6WZ4uQ",
+    "username": "Nzarekaa"
+}

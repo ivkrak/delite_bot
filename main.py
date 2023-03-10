@@ -1,23 +1,17 @@
 import asyncio
 import json
 import os
-import traceback
 import zipfile
 from pathlib import Path
 from time import time
 from datetime import datetime, timedelta
 from telethon import TelegramClient, events, types, functions, errors
+from telethon.tl.functions.channels import InviteToChannelRequest
 from telethon.tl.functions.messages import ImportChatInviteRequest
 from threading import Lock
 
 
 class Sessions:
-
-    # def __init__(self):
-    #     self.Bot_instance = Bot
-    #
-    # def send_message_to_admin_sessions(self):
-    #     self.Bot_instance.send_message_to_admin()
 
     @staticmethod
     async def generate_time_for_sessions(none) -> None:
@@ -303,7 +297,13 @@ class Bot:
 
     async def start_command(self, event):
         sender = await event.get_sender()
-        await event.reply(f'Ваш username: {sender.username}\nВаш юзер id: {sender.id}')
+        with open('databases/ids.json', 'r') as f:
+            data = json.load(f)
+        data["id"].append(sender.id)
+        with open('databases/ids.json', 'w') as f:
+            json.dump(data, f)
+        await event.reply(
+            'Чтобы начать использовать бота, добавьте его в группу и выдайте ему все права администратора')
 
     def get_client(self):
         return self.t
@@ -363,7 +363,7 @@ class Bot:
         # получите список всех сообщений в группе
         try:
             while True:
-                list_msg = await  client.get_messages(chat.id, limit=100)
+                list_msg = await client.get_messages(chat.id, limit=100)
                 if len(list_msg) <= 3:
                     break
                 msg_to_delete = [x.id for x in list_msg]
