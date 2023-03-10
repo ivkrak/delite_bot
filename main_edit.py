@@ -316,7 +316,8 @@ class Bot:
             return chat.username
         else:
             expire_date = datetime.now() + timedelta(days=3)
-            link = await self.bot_client(functions.messages.ExportChatInviteRequest(chat, True, False, expire_date, 3, "our bot"))
+            expire_date = int(datetime.timestamp(expire_date))
+            link = await self.bot_client(functions.messages.ExportChatInviteRequest(peer = chat, legacy_revoke_permanent = None, request_needed = False, expire_date = expire_date, 3, "our bot"))
             return link.link
 
     @only_groups_functions
