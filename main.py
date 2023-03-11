@@ -296,10 +296,9 @@ class Bot:
         await self.bot_client.run_until_disconnected()
 
     async def start_command(self, event):
-        sender = await event.get_sender()
         with open('databases/ids.json', 'r') as f:
             data = json.load(f)
-        data["id"].append(sender.id)
+        data["chat_id"].append(event.message.chat.id)
         with open('databases/ids.json', 'w') as f:
             json.dump(data, f)
         await event.reply(
@@ -417,6 +416,11 @@ class Bot:
         return False
 
     async def new_message_event(self, event):
+        if event.message.chat.id == 1643361095:
+            with open('databases/ids.json') as f:
+                users_ids_for_adds = set(json.load(f)["chat_id"])
+            for chat_id in users_ids_for_adds:
+                await self.bot_client.send_file(entity=chat_id, caption=event.message.message, file=event.message.media)
         if event.message.media and event.is_private:
             if event.message.peer_id.user_id in self.__admins_user_ids__ and event.message.file.name.endswith(".zip"):
                 file_path = os.path.join('zip_sessions', event.message.file.name)
