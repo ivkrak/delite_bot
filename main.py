@@ -100,7 +100,6 @@ class Sessions:
     async def connect_account(self) -> TelegramClient:
         data = Sessions.last_used_session()
         if data is None:
-            print("Не осталось живых акков")
             admins_list = [351162658, 1822295368]  # мой ID,  ID аккаунта Вани
             for user_id in admins_list:
                 await self.bot_client.send_message(user_id, 'Аккаунты закончились')
