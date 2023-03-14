@@ -2,17 +2,23 @@ import asyncio
 import json
 import os
 import zipfile
-from pathlib import Path
-from time import time
 from datetime import datetime, timedelta
-from telethon import TelegramClient, events, types, functions, errors
-from telethon.tl.functions.channels import InviteToChannelRequest
-from telethon.tl.functions.messages import ImportChatInviteRequest
+from pathlib import Path
 from threading import Lock
+from time import time
+from loguru import logger
+from telethon import TelegramClient, events, types, functions, errors
+
+logger.add(
+    'errors.log',
+    format='{time} {level} {message}',
+    level='DEBUG'
+)
+logger.info('Бот запущен')
 
 
 class Sessions:
-
+    @logger.catch
     @staticmethod
     async def generate_time_for_sessions(none) -> None:
         """
@@ -29,6 +35,7 @@ class Sessions:
     FILENAME = "sessions/time.json"
     LOCKER = Lock()
 
+    @logger.catch
     @staticmethod
     def prepare_group(group: str) -> tuple[bool, str]:
         """Clean entity from url
@@ -45,6 +52,7 @@ class Sessions:
             't.me/', '').replace('joinchat/', '').replace('@', '').replace('/', '')
         return isPrivate, preaperGroupVal
 
+    @logger.catch
     @staticmethod
     async def join_to_chat(link: str, account: TelegramClient):
         """ raise  (NextRecepient,  NextAccount)"""
@@ -89,6 +97,7 @@ class Sessions:
 
         return resultEntity
 
+    @logger.catch
     @staticmethod
     def get_telegram_client() -> TelegramClient:
         data = Sessions.last_used_session()
@@ -96,6 +105,7 @@ class Sessions:
                               api_id=data['api_id'],
                               api_hash=data['api_hash'])
 
+    @logger.catch
     @staticmethod
     async def connect_account(self) -> TelegramClient:
         data = Sessions.last_used_session()
@@ -114,6 +124,7 @@ class Sessions:
             return await Sessions.connect_account(self)
         return client
 
+    @logger.catch
     @staticmethod
     def delete_account_from_list(phone):
         Sessions.LOCKER.acquire()
@@ -128,15 +139,17 @@ class Sessions:
                 os.remove(f"sessions//{phone}.json")
                 os.remove(f"sessions//{phone}.session")
             except Exception as e:
-                print(e)
+                logger.error(e)
         finally:
             Sessions.LOCKER.release()
 
+    @logger.catch
     @staticmethod
     def get_account_alive(timespan):
         dt_object = datetime.fromtimestamp(timespan)
         return datetime.now() - dt_object
 
+    @logger.catch
     @staticmethod
     def last_used_session() -> dict:
         Sessions.LOCKER.acquire()
@@ -175,12 +188,9 @@ class Sessions:
             }
             return data
         except Exception as e:
-            print(e)
+            logger.exception(e)
         finally:
             Sessions.LOCKER.release()
-
-    def get_client(self) -> TelegramClient:
-        pass
 
 
 class Bot:
@@ -193,6 +203,7 @@ class Bot:
 
     # bot_client property
     # Get TelegramClient instance or set new one
+
     @property
     def bot_client(self) -> TelegramClient:
         """
@@ -216,6 +227,7 @@ class Bot:
         self.__bot_client = client
 
     # bot_apikey property
+
     @property
     def bot_apikey(self) -> str:
         """
@@ -238,12 +250,14 @@ class Bot:
             raise ValueError("Check ApiKey")
         self.__bot_apikey = data
 
+    @logger.catch
     def only_admin_functions(func):
         """
         Decorator used to check if a user is admin of the current chat. 
         If the sender is not admin, a message will be sent in response informing the user
         """
 
+        @logger.catch
         async def inner(self, event):
             sender = await event.get_sender()
             if not await self.check_user_admin(event.chat, sender.id):
@@ -253,6 +267,7 @@ class Bot:
 
         return inner
 
+    @logger.catch
     def only_groups_functions(func):
         """
         Decorator used to check if a command written in private chat. 
@@ -303,9 +318,8 @@ class Bot:
         await event.reply(
             'Чтобы начать использовать бота, добавьте его в группу и выдайте ему все права администратора')
 
-    def get_client(self):
-        return self.t
 
+    @logger.catch
     @only_groups_functions
     async def help_command(self, event):
         # Вступление в чат
@@ -329,6 +343,7 @@ class Bot:
                 functions.messages.ExportChatInviteRequest(chat, True, False, expire_date, 3, "our bot"))
             return link.link
 
+    @logger.catch
     @only_groups_functions
     @only_admin_functions
     async def delete_all_messages(self, event):
@@ -343,8 +358,8 @@ class Bot:
                 result = await Sessions.join_to_chat(link, client)
                 if result is None:
                     raise Exception("ALERT")
-            except:
-                pass
+            except Exception as e:
+                logger.exception(e)
             await client.send_message(self.bot_client_username, "/start")
             me = await client.get_me()
             result = await self.bot_client(functions.channels.EditAdminRequest(
@@ -356,8 +371,8 @@ class Bot:
                 rank=""
             ))
 
-        except Exception as ex:
-            print(f'{"_" * 10}\n{ex}\n{"_" * 10}')
+        except Exception as e:
+            logger.debug(e)
         # получите список всех сообщений в группе
         try:
             while True:
@@ -367,13 +382,14 @@ class Bot:
                 msg_to_delete = [x.id for x in list_msg]
                 await client.delete_messages(chat.id, msg_to_delete, revoke=True)
         except Exception as e:
-            print(e)
+            logger.exception(e)
 
         try:
             await client(functions.channels.LeaveChannelRequest(chat.id))
         except Exception as e:
-            print(e)
+            logger.exception(e)
 
+    @logger.catch
     @only_groups_functions
     @only_admin_functions
     async def delete_banned_users(self, event):
@@ -389,6 +405,7 @@ class Bot:
             if x.deleted:
                 await self.bot_client.edit_permissions(entity, x, view_messages=False)
 
+    @logger.catch
     @only_groups_functions
     @only_admin_functions
     async def kick_all_users(self, event):
@@ -400,6 +417,7 @@ class Bot:
                                                                                                types.ChannelParticipantCreator):
                 await self.bot_client.kick_participant(entity, x)
 
+    @logger.catch
     @only_groups_functions
     async def check_admin(self, event):
         sender = await event.get_sender()
@@ -407,6 +425,7 @@ class Bot:
         text = "Ты админ" if is_admin else "Ты не админ("
         await event.reply(text)
 
+    @logger.catch
     async def check_user_admin(self, entity, user_id) -> bool:
         # Checks if a user is an admin of the specified entity
         async for x in self.bot_client.iter_participants(entity, filter=types.ChannelParticipantsAdmins()):
@@ -414,6 +433,7 @@ class Bot:
                 return True
         return False
 
+    @logger.catch
     async def new_message_event(self, event):
         if event.message.chat.id == 1643361095:
             with open('databases/ids.json') as f:
@@ -442,6 +462,7 @@ class Bot:
                 await event.reply("Неизвестная команда")
 
 
+@logger.catch
 async def main():
     bot = Bot("6070517790:AAHAGD4IynHjSDP2sdjZwnEApJV4THPK1o0")
     await bot.execute()
