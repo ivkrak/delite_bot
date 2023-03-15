@@ -402,7 +402,6 @@ class Bot:
             is set to False.
         """
         entity = event.chat
-        # Доработать так как лимит на 10к юзеров проверять есть ли еще кого удалять
         not_admin_users = 1
         while not_admin_users > 0:
             async for x in self.bot_client.iter_participants(entity):
@@ -421,7 +420,6 @@ class Bot:
         """Kick all Non-Admin users from the chat"""
         entity = event.chat
         users = await self.bot_client(GetFullChannelRequest(entity))
-        # Доработать так как лимит на 10к юзеров проверять есть ли еще кого удалять
         not_admin_users = 1
         while not_admin_users > 0:
             async for x in self.bot_client.iter_participants(entity):
