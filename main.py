@@ -413,10 +413,6 @@ class Bot:
             not_admin_users = all_users - admins
             await asyncio.sleep(60)
 
-            # logger.debug(f'{admins=}')
-            # logger.debug(f'{all_users=}')
-            # logger.debug(f'{not_admin_users=}')
-
     @logger.catch
     @only_groups_functions
     @only_admin_functions
