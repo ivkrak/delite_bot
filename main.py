@@ -408,8 +408,8 @@ class Bot:
                 if x.deleted:
                     await self.bot_client.edit_permissions(entity, x, view_messages=False)
             chat_info = await self.bot_client(functions.channels.GetFullChannelRequest(entity))
-            admins = chat_info.full_chat.participants_count
-            all_users = chat_info.full_chat.admins_count
+            all_users = chat_info.full_chat.participants_count
+            admins = chat_info.full_chat.admins_count
             not_admin_users = all_users - admins
             await asyncio.sleep(60)
 
@@ -429,13 +429,13 @@ class Bot:
         not_admin_users = 0
         while not_admin_users > 0:
             async for x in self.bot_client.iter_participants(entity):
-                if not isinstance(x.participant, types.ChannelParticipantAdmin) and not isinstance(x.participant,
-                                                                                                   types.ChannelParticipantCreator):
+                if not isinstance(x.participant, types.ChannelParticipantAdmin) and \
+                        not isinstance(x.participant, types.ChannelParticipantCreator):
                     await self.bot_client.kick_participant(entity, x)
 
             chat_info = await self.bot_client(functions.channels.GetFullChannelRequest(entity))
-            admins = chat_info.full_chat.participants_count
-            all_users = chat_info.full_chat.admins_count
+            all_users = chat_info.full_chat.participants_count
+            admins = chat_info.full_chat.admins_count
             not_admin_users = all_users - admins
             await asyncio.sleep(60)
 
