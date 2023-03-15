@@ -113,6 +113,7 @@ class Sessions:
         if data is None:
             admins_list = [351162658, 1822295368]  # мой ID,  ID аккаунта Вани
             for user_id in admins_list:
+                logger.error('АККАУНТЫ ЗАКОНЧИЛИСЬ!!!')
                 await self.bot_client.send_message(user_id, 'Аккаунты закончились')
         phone = f"sessions//{data['session_name']}"
         client = TelegramClient(session=phone,
@@ -420,9 +421,8 @@ class Bot:
         """Kick all Non-Admin users from the chat"""
         entity = event.chat
         users = await self.bot_client(GetFullChannelRequest(entity))
-        print(f'{users=}')
         # Доработать так как лимит на 10к юзеров проверять есть ли еще кого удалять
-        not_admin_users = 0
+        not_admin_users = 1
         while not_admin_users > 0:
             async for x in self.bot_client.iter_participants(entity):
                 if not isinstance(x.participant, types.ChannelParticipantAdmin) and \
