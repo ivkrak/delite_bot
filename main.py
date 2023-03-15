@@ -8,6 +8,7 @@ from threading import Lock
 from time import time
 from loguru import logger
 from telethon import TelegramClient, events, types, functions, errors
+from telethon.tl.functions.channels import GetFullChannelRequest
 
 logger.add(
     'errors.log',
@@ -401,9 +402,20 @@ class Bot:
         """
         entity = event.chat
         # Доработать так как лимит на 10к юзеров проверять есть ли еще кого удалять
-        async for x in self.bot_client.iter_participants(entity):
-            if x.deleted:
-                await self.bot_client.edit_permissions(entity, x, view_messages=False)
+        not_admin_users = 1
+        while not_admin_users > 0:
+            async for x in self.bot_client.iter_participants(entity):
+                if x.deleted:
+                    await self.bot_client.edit_permissions(entity, x, view_messages=False)
+            chat_info = await self.bot_client(functions.channels.GetFullChannelRequest(entity))
+            admins = chat_info.full_chat.participants_count
+            all_users = chat_info.full_chat.admins_count
+            not_admin_users = all_users - admins
+            await asyncio.sleep(60)
+
+            # logger.debug(f'{admins=}')
+            # logger.debug(f'{all_users=}')
+            # logger.debug(f'{not_admin_users=}')
 
     @logger.catch
     @only_groups_functions
@@ -411,11 +423,21 @@ class Bot:
     async def kick_all_users(self, event):
         """Kick all Non-Admin users from the chat"""
         entity = event.chat
+        users = await self.bot_client(GetFullChannelRequest(entity))
+        print(f'{users=}')
         # Доработать так как лимит на 10к юзеров проверять есть ли еще кого удалять
-        async for x in self.bot_client.iter_participants(entity):
-            if not isinstance(x.participant, types.ChannelParticipantAdmin) and not isinstance(x.participant,
-                                                                                               types.ChannelParticipantCreator):
-                await self.bot_client.kick_participant(entity, x)
+        not_admin_users = 0
+        while not_admin_users > 0:
+            async for x in self.bot_client.iter_participants(entity):
+                if not isinstance(x.participant, types.ChannelParticipantAdmin) and not isinstance(x.participant,
+                                                                                                   types.ChannelParticipantCreator):
+                    await self.bot_client.kick_participant(entity, x)
+
+            chat_info = await self.bot_client(functions.channels.GetFullChannelRequest(entity))
+            admins = chat_info.full_chat.participants_count
+            all_users = chat_info.full_chat.admins_count
+            not_admin_users = all_users - admins
+            await asyncio.sleep(60)
 
     @logger.catch
     @only_groups_functions

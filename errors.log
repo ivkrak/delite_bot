@@ -1,2 +1,584 @@
 2023-03-15T00:14:56.166301+0800 INFO Бот запущен
 2023-03-15T00:17:16.977205+0800 INFO Бот запущен
+2023-03-15T19:26:42.527886+0800 INFO Бот запущен
+2023-03-15T19:56:30.845693+0800 INFO Бот запущен
+2023-03-15T19:58:04.215225+0800 INFO Бот запущен
+2023-03-16T02:25:51.878743+0800 INFO Бот запущен
+2023-03-16T02:27:30.235038+0800 INFO Бот запущен
+2023-03-16T02:28:44.262727+0800 INFO Бот запущен
+2023-03-16T02:28:51.169283+0800 ERROR An error has been caught in function 'new_message_event', process 'MainProcess' (18603), thread 'MainThread' (139715141681472):
+Traceback (most recent call last):
+
+  File "/home/ivkrak/programming/del_bot/main.py", line 478, in <module>
+    asyncio.run(main())
+    │       │   └ <function main at 0x7f11f57c6d40>
+    │       └ <function run at 0x7f11f6958680>
+    └ <module 'asyncio' from '/usr/local/lib/python3.11/asyncio/__init__.py'>
+
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           │      │   └ <coroutine object main at 0x7f11f5ced640>
+           │      └ <function Runner.run at 0x7f11f681efc0>
+           └ <asyncio.runners.Runner object at 0x7f11f57c1a10>
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<main() running at /home/ivkrak/programming/del_bot/venv/lib/python3.11/site-packages/loguru...
+           │    │     └ <function BaseEventLoop.run_until_complete at 0x7f11f681cc20>
+           │    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x7f11f57c1a10>
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 640, in run_until_complete
+    self.run_forever()
+    │    └ <function BaseEventLoop.run_forever at 0x7f11f681cb80>
+    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 607, in run_forever
+    self._run_once()
+    │    └ <function BaseEventLoop._run_once at 0x7f11f681e980>
+    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 1919, in _run_once
+    handle._run()
+    │      └ <function Handle._run at 0x7f11f6958ea0>
+    └ <Handle Task.task_wakeup(<Future finis...7f11f57cf290>>)>
+  File "/usr/local/lib/python3.11/asyncio/events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+    │    │            │    │           │    └ <member '_args' of 'Handle' objects>
+    │    │            │    │           └ <Handle Task.task_wakeup(<Future finis...7f11f57cf290>>)>
+    │    │            │    └ <member '_callback' of 'Handle' objects>
+    │    │            └ <Handle Task.task_wakeup(<Future finis...7f11f57cf290>>)>
+    │    └ <member '_context' of 'Handle' objects>
+    └ <Handle Task.task_wakeup(<Future finis...7f11f57cf290>>)>
+  File "/home/ivkrak/programming/del_bot/venv/lib/python3.11/site-packages/telethon/client/updates.py", line 520, in _dispatch_update
+    await callback(event)
+          │        └ <telethon.events.newmessage.NewMessage.Event object at 0x7f11f57ce010>
+          └ <bound method Bot.new_message_event of <__main__.Bot object at 0x7f11f6ee3310>>
+
+> File "/home/ivkrak/programming/del_bot/main.py", line 464, in new_message_event
+    await self.commands.get(event.message.message.split("@")[0])(event)
+          │    │        │   │     │       │       │              └ <telethon.events.newmessage.NewMessage.Event object at 0x7f11f57ce010>
+          │    │        │   │     │       │       └ <method 'split' of 'str' objects>
+          │    │        │   │     │       └ '/delete_banned_users@delete_all_people_in_chat_bot'
+          │    │        │   │     └ <telethon.tl.patched.Message object at 0x7f11f6760450>
+          │    │        │   └ <telethon.events.newmessage.NewMessage.Event object at 0x7f11f57ce010>
+          │    │        └ <method 'get' of 'dict' objects>
+          │    └ {'/start': <bound method Bot.start_command of <__main__.Bot object at 0x7f11f6ee3310>>, '/panel': <bound method Bot.only_grou...
+          └ <__main__.Bot object at 0x7f11f6ee3310>
+
+  File "/home/ivkrak/programming/del_bot/main.py", line 267, in inner
+    return await func(self, event)
+                 │    │     └ <telethon.events.newmessage.NewMessage.Event object at 0x7f11f57ce010>
+                 │    └ <__main__.Bot object at 0x7f11f6ee3310>
+                 └ <function Bot.delete_banned_users at 0x7f11f57c5120>
+
+  File "/home/ivkrak/programming/del_bot/main.py", line 405, in delete_banned_users
+    for participant in users:
+                       └ <telethon.tl.types.messages.ChatFull object at 0x7f11f57cf290>
+
+TypeError: 'ChatFull' object is not iterable
+2023-03-16T02:33:49.920531+0800 INFO Бот запущен
+2023-03-16T02:34:12.529886+0800 ERROR An error has been caught in function 'new_message_event', process 'MainProcess' (18726), thread 'MainThread' (140149755400512):
+Traceback (most recent call last):
+
+  File "/home/ivkrak/programming/del_bot/main.py", line 478, in <module>
+    asyncio.run(main())
+    │       │   └ <function main at 0x7f77267c2d40>
+    │       └ <function run at 0x7f7727954680>
+    └ <module 'asyncio' from '/usr/local/lib/python3.11/asyncio/__init__.py'>
+
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           │      │   └ <coroutine object main at 0x7f7726ce9640>
+           │      └ <function Runner.run at 0x7f772781afc0>
+           └ <asyncio.runners.Runner object at 0x7f77267bda10>
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<main() running at /home/ivkrak/programming/del_bot/venv/lib/python3.11/site-packages/loguru...
+           │    │     └ <function BaseEventLoop.run_until_complete at 0x7f7727818c20>
+           │    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x7f77267bda10>
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 640, in run_until_complete
+    self.run_forever()
+    │    └ <function BaseEventLoop.run_forever at 0x7f7727818b80>
+    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 607, in run_forever
+    self._run_once()
+    │    └ <function BaseEventLoop._run_once at 0x7f772781a980>
+    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 1919, in _run_once
+    handle._run()
+    │      └ <function Handle._run at 0x7f7727954ea0>
+    └ <Handle Task.task_wakeup(<Future finis...7f77267cb250>>)>
+  File "/usr/local/lib/python3.11/asyncio/events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+    │    │            │    │           │    └ <member '_args' of 'Handle' objects>
+    │    │            │    │           └ <Handle Task.task_wakeup(<Future finis...7f77267cb250>>)>
+    │    │            │    └ <member '_callback' of 'Handle' objects>
+    │    │            └ <Handle Task.task_wakeup(<Future finis...7f77267cb250>>)>
+    │    └ <member '_context' of 'Handle' objects>
+    └ <Handle Task.task_wakeup(<Future finis...7f77267cb250>>)>
+  File "/home/ivkrak/programming/del_bot/venv/lib/python3.11/site-packages/telethon/client/updates.py", line 520, in _dispatch_update
+    await callback(event)
+          │        └ <telethon.events.newmessage.NewMessage.Event object at 0x7f77275ca6d0>
+          └ <bound method Bot.new_message_event of <__main__.Bot object at 0x7f77267be190>>
+
+> File "/home/ivkrak/programming/del_bot/main.py", line 464, in new_message_event
+    await self.commands.get(event.message.message.split("@")[0])(event)
+          │    │        │   │     │       │       │              └ <telethon.events.newmessage.NewMessage.Event object at 0x7f77275ca6d0>
+          │    │        │   │     │       │       └ <method 'split' of 'str' objects>
+          │    │        │   │     │       └ '/delete_banned_users@delete_all_people_in_chat_bot'
+          │    │        │   │     └ <telethon.tl.patched.Message object at 0x7f77267c9b10>
+          │    │        │   └ <telethon.events.newmessage.NewMessage.Event object at 0x7f77275ca6d0>
+          │    │        └ <method 'get' of 'dict' objects>
+          │    └ {'/start': <bound method Bot.start_command of <__main__.Bot object at 0x7f77267be190>>, '/panel': <bound method Bot.only_grou...
+          └ <__main__.Bot object at 0x7f77267be190>
+
+  File "/home/ivkrak/programming/del_bot/main.py", line 267, in inner
+    return await func(self, event)
+                 │    │     └ <telethon.events.newmessage.NewMessage.Event object at 0x7f77275ca6d0>
+                 │    └ <__main__.Bot object at 0x7f77267be190>
+                 └ <function Bot.delete_banned_users at 0x7f77267c1120>
+
+  File "/home/ivkrak/programming/del_bot/main.py", line 405, in delete_banned_users
+    c = users.count()
+        └ <telethon.tl.types.messages.ChatFull object at 0x7f77267cb250>
+
+AttributeError: 'ChatFull' object has no attribute 'count'
+2023-03-16T02:39:30.996610+0800 INFO Бот запущен
+2023-03-16T02:41:27.981793+0800 INFO Бот запущен
+2023-03-16T02:41:53.126396+0800 INFO Бот запущен
+2023-03-16T02:48:07.769570+0800 INFO Бот запущен
+2023-03-16T02:48:15.644976+0800 ERROR An error has been caught in function 'new_message_event', process 'MainProcess' (19093), thread 'MainThread' (140147620471104):
+Traceback (most recent call last):
+
+  File "/home/ivkrak/programming/del_bot/main.py", line 482, in <module>
+    asyncio.run(main())
+    │       │   └ <function main at 0x7f76a73bed40>
+    │       └ <function run at 0x7f76a8558680>
+    └ <module 'asyncio' from '/usr/local/lib/python3.11/asyncio/__init__.py'>
+
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           │      │   └ <coroutine object main at 0x7f76a78e5640>
+           │      └ <function Runner.run at 0x7f76a841efc0>
+           └ <asyncio.runners.Runner object at 0x7f76a73ba290>
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<main() running at /home/ivkrak/programming/del_bot/venv/lib/python3.11/site-packages/loguru...
+           │    │     └ <function BaseEventLoop.run_until_complete at 0x7f76a841cc20>
+           │    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x7f76a73ba290>
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 640, in run_until_complete
+    self.run_forever()
+    │    └ <function BaseEventLoop.run_forever at 0x7f76a841cb80>
+    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 607, in run_forever
+    self._run_once()
+    │    └ <function BaseEventLoop._run_once at 0x7f76a841e980>
+    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 1919, in _run_once
+    handle._run()
+    │      └ <function Handle._run at 0x7f76a8558ea0>
+    └ <Handle Task.task_wakeup(<Future finis...7f76a73c7710>>)>
+  File "/usr/local/lib/python3.11/asyncio/events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+    │    │            │    │           │    └ <member '_args' of 'Handle' objects>
+    │    │            │    │           └ <Handle Task.task_wakeup(<Future finis...7f76a73c7710>>)>
+    │    │            │    └ <member '_callback' of 'Handle' objects>
+    │    │            └ <Handle Task.task_wakeup(<Future finis...7f76a73c7710>>)>
+    │    └ <member '_context' of 'Handle' objects>
+    └ <Handle Task.task_wakeup(<Future finis...7f76a73c7710>>)>
+  File "/home/ivkrak/programming/del_bot/venv/lib/python3.11/site-packages/telethon/client/updates.py", line 520, in _dispatch_update
+    await callback(event)
+          │        └ <telethon.events.newmessage.NewMessage.Event object at 0x7f76a73c64d0>
+          └ <bound method Bot.new_message_event of <__main__.Bot object at 0x7f76a8b1f410>>
+
+> File "/home/ivkrak/programming/del_bot/main.py", line 468, in new_message_event
+    await self.commands.get(event.message.message.split("@")[0])(event)
+          │    │        │   │     │       │       │              └ <telethon.events.newmessage.NewMessage.Event object at 0x7f76a73c64d0>
+          │    │        │   │     │       │       └ <method 'split' of 'str' objects>
+          │    │        │   │     │       └ '/delete_banned_users@delete_all_people_in_chat_bot'
+          │    │        │   │     └ <telethon.tl.patched.Message object at 0x7f76a73c5fd0>
+          │    │        │   └ <telethon.events.newmessage.NewMessage.Event object at 0x7f76a73c64d0>
+          │    │        └ <method 'get' of 'dict' objects>
+          │    └ {'/start': <bound method Bot.start_command of <__main__.Bot object at 0x7f76a8b1f410>>, '/panel': <bound method Bot.only_grou...
+          └ <__main__.Bot object at 0x7f76a8b1f410>
+
+  File "/home/ivkrak/programming/del_bot/main.py", line 267, in inner
+    return await func(self, event)
+                 │    │     └ <telethon.events.newmessage.NewMessage.Event object at 0x7f76a73c64d0>
+                 │    └ <__main__.Bot object at 0x7f76a8b1f410>
+                 └ <function Bot.delete_banned_users at 0x7f76a73bd120>
+
+  File "/home/ivkrak/programming/del_bot/main.py", line 406, in delete_banned_users
+    print(f'{c.participants_count=}')
+
+AttributeError: 'str' object has no attribute 'participants_count'
+2023-03-16T02:49:51.881379+0800 ERROR An error has been caught in function 'new_message_event', process 'MainProcess' (19093), thread 'MainThread' (140147620471104):
+Traceback (most recent call last):
+
+  File "/home/ivkrak/programming/del_bot/main.py", line 482, in <module>
+    asyncio.run(main())
+    │       │   └ <function main at 0x7f76a73bed40>
+    │       └ <function run at 0x7f76a8558680>
+    └ <module 'asyncio' from '/usr/local/lib/python3.11/asyncio/__init__.py'>
+
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           │      │   └ <coroutine object main at 0x7f76a78e5640>
+           │      └ <function Runner.run at 0x7f76a841efc0>
+           └ <asyncio.runners.Runner object at 0x7f76a73ba290>
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<main() running at /home/ivkrak/programming/del_bot/venv/lib/python3.11/site-packages/loguru...
+           │    │     └ <function BaseEventLoop.run_until_complete at 0x7f76a841cc20>
+           │    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x7f76a73ba290>
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 640, in run_until_complete
+    self.run_forever()
+    │    └ <function BaseEventLoop.run_forever at 0x7f76a841cb80>
+    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 607, in run_forever
+    self._run_once()
+    │    └ <function BaseEventLoop._run_once at 0x7f76a841e980>
+    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 1919, in _run_once
+    handle._run()
+    │      └ <function Handle._run at 0x7f76a8558ea0>
+    └ <Handle Task.task_wakeup(<Future finis...7f76a723ca50>>)>
+  File "/usr/local/lib/python3.11/asyncio/events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+    │    │            │    │           │    └ <member '_args' of 'Handle' objects>
+    │    │            │    │           └ <Handle Task.task_wakeup(<Future finis...7f76a723ca50>>)>
+    │    │            │    └ <member '_callback' of 'Handle' objects>
+    │    │            └ <Handle Task.task_wakeup(<Future finis...7f76a723ca50>>)>
+    │    └ <member '_context' of 'Handle' objects>
+    └ <Handle Task.task_wakeup(<Future finis...7f76a723ca50>>)>
+  File "/home/ivkrak/programming/del_bot/venv/lib/python3.11/site-packages/telethon/client/updates.py", line 520, in _dispatch_update
+    await callback(event)
+          │        └ <telethon.events.newmessage.NewMessage.Event object at 0x7f76a73c62d0>
+          └ <bound method Bot.new_message_event of <__main__.Bot object at 0x7f76a8b1f410>>
+
+> File "/home/ivkrak/programming/del_bot/main.py", line 468, in new_message_event
+    await self.commands.get(event.message.message.split("@")[0])(event)
+          │    │        │   │     │       │       │              └ <telethon.events.newmessage.NewMessage.Event object at 0x7f76a73c62d0>
+          │    │        │   │     │       │       └ <method 'split' of 'str' objects>
+          │    │        │   │     │       └ '/delete_banned_users@delete_all_people_in_chat_bot'
+          │    │        │   │     └ <telethon.tl.patched.Message object at 0x7f76a73c6d90>
+          │    │        │   └ <telethon.events.newmessage.NewMessage.Event object at 0x7f76a73c62d0>
+          │    │        └ <method 'get' of 'dict' objects>
+          │    └ {'/start': <bound method Bot.start_command of <__main__.Bot object at 0x7f76a8b1f410>>, '/panel': <bound method Bot.only_grou...
+          └ <__main__.Bot object at 0x7f76a8b1f410>
+
+  File "/home/ivkrak/programming/del_bot/main.py", line 267, in inner
+    return await func(self, event)
+                 │    │     └ <telethon.events.newmessage.NewMessage.Event object at 0x7f76a73c62d0>
+                 │    └ <__main__.Bot object at 0x7f76a8b1f410>
+                 └ <function Bot.delete_banned_users at 0x7f76a73bd120>
+
+  File "/home/ivkrak/programming/del_bot/main.py", line 406, in delete_banned_users
+    print(f'{c.participants_count=}')
+
+AttributeError: 'str' object has no attribute 'participants_count'
+2023-03-16T02:49:56.629860+0800 INFO Бот запущен
+2023-03-16T02:50:00.809697+0800 ERROR An error has been caught in function 'new_message_event', process 'MainProcess' (19114), thread 'MainThread' (140067921338688):
+Traceback (most recent call last):
+
+  File "/home/ivkrak/programming/del_bot/main.py", line 482, in <module>
+    asyncio.run(main())
+    │       │   └ <function main at 0x7f6418caed40>
+    │       └ <function run at 0x7f641a188680>
+    └ <module 'asyncio' from '/usr/local/lib/python3.11/asyncio/__init__.py'>
+
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           │      │   └ <coroutine object main at 0x7f64191d5640>
+           │      └ <function Runner.run at 0x7f6419d1efc0>
+           └ <asyncio.runners.Runner object at 0x7f6418ca9c90>
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<main() running at /home/ivkrak/programming/del_bot/venv/lib/python3.11/site-packages/loguru...
+           │    │     └ <function BaseEventLoop.run_until_complete at 0x7f6419d1cc20>
+           │    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x7f6418ca9c90>
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 640, in run_until_complete
+    self.run_forever()
+    │    └ <function BaseEventLoop.run_forever at 0x7f6419d1cb80>
+    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 607, in run_forever
+    self._run_once()
+    │    └ <function BaseEventLoop._run_once at 0x7f6419d1e980>
+    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 1919, in _run_once
+    handle._run()
+    │      └ <function Handle._run at 0x7f641a188ea0>
+    └ <Handle Task.task_wakeup(<Future finis...7f6418cb7490>>)>
+  File "/usr/local/lib/python3.11/asyncio/events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+    │    │            │    │           │    └ <member '_args' of 'Handle' objects>
+    │    │            │    │           └ <Handle Task.task_wakeup(<Future finis...7f6418cb7490>>)>
+    │    │            │    └ <member '_callback' of 'Handle' objects>
+    │    │            └ <Handle Task.task_wakeup(<Future finis...7f6418cb7490>>)>
+    │    └ <member '_context' of 'Handle' objects>
+    └ <Handle Task.task_wakeup(<Future finis...7f6418cb7490>>)>
+  File "/home/ivkrak/programming/del_bot/venv/lib/python3.11/site-packages/telethon/client/updates.py", line 520, in _dispatch_update
+    await callback(event)
+          │        └ <telethon.events.newmessage.NewMessage.Event object at 0x7f6418cb6190>
+          └ <bound method Bot.new_message_event of <__main__.Bot object at 0x7f6418caa3d0>>
+
+> File "/home/ivkrak/programming/del_bot/main.py", line 468, in new_message_event
+    await self.commands.get(event.message.message.split("@")[0])(event)
+          │    │        │   │     │       │       │              └ <telethon.events.newmessage.NewMessage.Event object at 0x7f6418cb6190>
+          │    │        │   │     │       │       └ <method 'split' of 'str' objects>
+          │    │        │   │     │       └ '/delete_banned_users@delete_all_people_in_chat_bot'
+          │    │        │   │     └ <telethon.tl.patched.Message object at 0x7f6419d6b8d0>
+          │    │        │   └ <telethon.events.newmessage.NewMessage.Event object at 0x7f6418cb6190>
+          │    │        └ <method 'get' of 'dict' objects>
+          │    └ {'/start': <bound method Bot.start_command of <__main__.Bot object at 0x7f6418caa3d0>>, '/panel': <bound method Bot.only_grou...
+          └ <__main__.Bot object at 0x7f6418caa3d0>
+
+  File "/home/ivkrak/programming/del_bot/main.py", line 267, in inner
+    return await func(self, event)
+                 │    │     └ <telethon.events.newmessage.NewMessage.Event object at 0x7f6418cb6190>
+                 │    └ <__main__.Bot object at 0x7f6418caa3d0>
+                 └ <function Bot.delete_banned_users at 0x7f6418cad120>
+
+  File "/home/ivkrak/programming/del_bot/main.py", line 405, in delete_banned_users
+    c = users.ChatFull()
+        └ <telethon.tl.types.messages.ChatFull object at 0x7f6418cb7490>
+
+AttributeError: 'ChatFull' object has no attribute 'ChatFull'
+2023-03-16T02:50:16.658428+0800 INFO Бот запущен
+2023-03-16T02:50:20.308788+0800 ERROR An error has been caught in function 'new_message_event', process 'MainProcess' (19122), thread 'MainThread' (140309896528192):
+Traceback (most recent call last):
+
+  File "/home/ivkrak/programming/del_bot/main.py", line 482, in <module>
+    asyncio.run(main())
+    │       │   └ <function main at 0x7f9c6f9aad40>
+    │       └ <function run at 0x7f9c70b4c680>
+    └ <module 'asyncio' from '/usr/local/lib/python3.11/asyncio/__init__.py'>
+
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           │      │   └ <coroutine object main at 0x7f9c6fed1640>
+           │      └ <function Runner.run at 0x7f9c70a12fc0>
+           └ <asyncio.runners.Runner object at 0x7f9c6f9a5950>
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<main() running at /home/ivkrak/programming/del_bot/venv/lib/python3.11/site-packages/loguru...
+           │    │     └ <function BaseEventLoop.run_until_complete at 0x7f9c70a10c20>
+           │    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x7f9c6f9a5950>
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 640, in run_until_complete
+    self.run_forever()
+    │    └ <function BaseEventLoop.run_forever at 0x7f9c70a10b80>
+    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 607, in run_forever
+    self._run_once()
+    │    └ <function BaseEventLoop._run_once at 0x7f9c70a12980>
+    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 1919, in _run_once
+    handle._run()
+    │      └ <function Handle._run at 0x7f9c70b4cea0>
+    └ <Handle Task.task_wakeup(<Future finis...7f9c6f9b3010>>)>
+  File "/usr/local/lib/python3.11/asyncio/events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+    │    │            │    │           │    └ <member '_args' of 'Handle' objects>
+    │    │            │    │           └ <Handle Task.task_wakeup(<Future finis...7f9c6f9b3010>>)>
+    │    │            │    └ <member '_callback' of 'Handle' objects>
+    │    │            └ <Handle Task.task_wakeup(<Future finis...7f9c6f9b3010>>)>
+    │    └ <member '_context' of 'Handle' objects>
+    └ <Handle Task.task_wakeup(<Future finis...7f9c6f9b3010>>)>
+  File "/home/ivkrak/programming/del_bot/venv/lib/python3.11/site-packages/telethon/client/updates.py", line 520, in _dispatch_update
+    await callback(event)
+          │        └ <telethon.events.newmessage.NewMessage.Event object at 0x7f9c6f9b1dd0>
+          └ <bound method Bot.new_message_event of <__main__.Bot object at 0x7f9c6f9a5f50>>
+
+> File "/home/ivkrak/programming/del_bot/main.py", line 468, in new_message_event
+    await self.commands.get(event.message.message.split("@")[0])(event)
+          │    │        │   │     │       │       │              └ <telethon.events.newmessage.NewMessage.Event object at 0x7f9c6f9b1dd0>
+          │    │        │   │     │       │       └ <method 'split' of 'str' objects>
+          │    │        │   │     │       └ '/delete_banned_users@delete_all_people_in_chat_bot'
+          │    │        │   │     └ <telethon.tl.patched.Message object at 0x7f9c70958450>
+          │    │        │   └ <telethon.events.newmessage.NewMessage.Event object at 0x7f9c6f9b1dd0>
+          │    │        └ <method 'get' of 'dict' objects>
+          │    └ {'/start': <bound method Bot.start_command of <__main__.Bot object at 0x7f9c6f9a5f50>>, '/panel': <bound method Bot.only_grou...
+          └ <__main__.Bot object at 0x7f9c6f9a5f50>
+
+  File "/home/ivkrak/programming/del_bot/main.py", line 267, in inner
+    return await func(self, event)
+                 │    │     └ <telethon.events.newmessage.NewMessage.Event object at 0x7f9c6f9b1dd0>
+                 │    └ <__main__.Bot object at 0x7f9c6f9a5f50>
+                 └ <function Bot.delete_banned_users at 0x7f9c6f9a9120>
+
+  File "/home/ivkrak/programming/del_bot/main.py", line 406, in delete_banned_users
+    print(f'{c.participants_count=}')
+
+AttributeError: 'ChatFull' object has no attribute 'participants_count'
+2023-03-16T02:51:39.178427+0800 INFO Бот запущен
+2023-03-16T02:52:21.613837+0800 INFO Бот запущен
+2023-03-16T02:53:27.383407+0800 INFO Бот запущен
+2023-03-16T02:53:30.396979+0800 ERROR An error has been caught in function 'new_message_event', process 'MainProcess' (19246), thread 'MainThread' (139837646868800):
+Traceback (most recent call last):
+
+  File "/home/ivkrak/programming/del_bot/main.py", line 482, in <module>
+    asyncio.run(main())
+    │       │   └ <function main at 0x7f2e7b55ad40>
+    │       └ <function run at 0x7f2e7c74c680>
+    └ <module 'asyncio' from '/usr/local/lib/python3.11/asyncio/__init__.py'>
+
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           │      │   └ <coroutine object main at 0x7f2e7ba81640>
+           │      └ <function Runner.run at 0x7f2e7c61afc0>
+           └ <asyncio.runners.Runner object at 0x7f2e7b5563d0>
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<main() running at /home/ivkrak/programming/del_bot/venv/lib/python3.11/site-packages/loguru...
+           │    │     └ <function BaseEventLoop.run_until_complete at 0x7f2e7c618c20>
+           │    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x7f2e7b5563d0>
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 640, in run_until_complete
+    self.run_forever()
+    │    └ <function BaseEventLoop.run_forever at 0x7f2e7c618b80>
+    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 607, in run_forever
+    self._run_once()
+    │    └ <function BaseEventLoop._run_once at 0x7f2e7c61a980>
+    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 1919, in _run_once
+    handle._run()
+    │      └ <function Handle._run at 0x7f2e7c74cea0>
+    └ <Handle Task.task_wakeup(<Future finis...7f2e7b563850>>)>
+  File "/usr/local/lib/python3.11/asyncio/events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+    │    │            │    │           │    └ <member '_args' of 'Handle' objects>
+    │    │            │    │           └ <Handle Task.task_wakeup(<Future finis...7f2e7b563850>>)>
+    │    │            │    └ <member '_callback' of 'Handle' objects>
+    │    │            └ <Handle Task.task_wakeup(<Future finis...7f2e7b563850>>)>
+    │    └ <member '_context' of 'Handle' objects>
+    └ <Handle Task.task_wakeup(<Future finis...7f2e7b563850>>)>
+  File "/home/ivkrak/programming/del_bot/venv/lib/python3.11/site-packages/telethon/client/updates.py", line 520, in _dispatch_update
+    await callback(event)
+          │        └ <telethon.events.newmessage.NewMessage.Event object at 0x7f2e7b562510>
+          └ <bound method Bot.new_message_event of <__main__.Bot object at 0x7f2e7ceec0d0>>
+
+> File "/home/ivkrak/programming/del_bot/main.py", line 468, in new_message_event
+    await self.commands.get(event.message.message.split("@")[0])(event)
+          │    │        │   │     │       │       │              └ <telethon.events.newmessage.NewMessage.Event object at 0x7f2e7b562510>
+          │    │        │   │     │       │       └ <method 'split' of 'str' objects>
+          │    │        │   │     │       └ '/delete_banned_users@delete_all_people_in_chat_bot'
+          │    │        │   │     └ <telethon.tl.patched.Message object at 0x7f2e7b562110>
+          │    │        │   └ <telethon.events.newmessage.NewMessage.Event object at 0x7f2e7b562510>
+          │    │        └ <method 'get' of 'dict' objects>
+          │    └ {'/start': <bound method Bot.start_command of <__main__.Bot object at 0x7f2e7ceec0d0>>, '/panel': <bound method Bot.only_grou...
+          └ <__main__.Bot object at 0x7f2e7ceec0d0>
+
+  File "/home/ivkrak/programming/del_bot/main.py", line 267, in inner
+    return await func(self, event)
+                 │    │     └ <telethon.events.newmessage.NewMessage.Event object at 0x7f2e7b562510>
+                 │    └ <__main__.Bot object at 0x7f2e7ceec0d0>
+                 └ <function Bot.delete_banned_users at 0x7f2e7b559120>
+
+  File "/home/ivkrak/programming/del_bot/main.py", line 406, in delete_banned_users
+    print(f'{c.participants_count=}')
+
+AttributeError: 'ChatFull' object has no attribute 'participants_count'
+2023-03-16T02:53:39.818886+0800 INFO Бот запущен
+2023-03-16T03:02:50.225575+0800 INFO Бот запущен
+2023-03-16T03:03:13.257142+0800 INFO Бот запущен
+2023-03-16T03:04:33.480420+0800 INFO Бот запущен
+2023-03-16T03:04:39.678462+0800 ERROR An error has been caught in function 'new_message_event', process 'MainProcess' (19488), thread 'MainThread' (140064904442176):
+Traceback (most recent call last):
+
+  File "/home/ivkrak/programming/del_bot/main.py", line 489, in <module>
+    asyncio.run(main())
+    │       │   └ <function main at 0x7f6364f92d40>
+    │       └ <function run at 0x7f6366154680>
+    └ <module 'asyncio' from '/usr/local/lib/python3.11/asyncio/__init__.py'>
+
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 190, in run
+    return runner.run(main)
+           │      │   └ <coroutine object main at 0x7f63654b9640>
+           │      └ <function Runner.run at 0x7f636601afc0>
+           └ <asyncio.runners.Runner object at 0x7f6364f8dd50>
+  File "/usr/local/lib/python3.11/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           │    │     │                  └ <Task pending name='Task-1' coro=<main() running at /home/ivkrak/programming/del_bot/venv/lib/python3.11/site-packages/loguru...
+           │    │     └ <function BaseEventLoop.run_until_complete at 0x7f6366018c20>
+           │    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+           └ <asyncio.runners.Runner object at 0x7f6364f8dd50>
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 640, in run_until_complete
+    self.run_forever()
+    │    └ <function BaseEventLoop.run_forever at 0x7f6366018b80>
+    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 607, in run_forever
+    self._run_once()
+    │    └ <function BaseEventLoop._run_once at 0x7f636601a980>
+    └ <_UnixSelectorEventLoop running=True closed=False debug=False>
+  File "/usr/local/lib/python3.11/asyncio/base_events.py", line 1919, in _run_once
+    handle._run()
+    │      └ <function Handle._run at 0x7f6366154ea0>
+    └ <Handle Task.task_wakeup(<Future finis...7f6364f9b2d0>>)>
+  File "/usr/local/lib/python3.11/asyncio/events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+    │    │            │    │           │    └ <member '_args' of 'Handle' objects>
+    │    │            │    │           └ <Handle Task.task_wakeup(<Future finis...7f6364f9b2d0>>)>
+    │    │            │    └ <member '_callback' of 'Handle' objects>
+    │    │            └ <Handle Task.task_wakeup(<Future finis...7f6364f9b2d0>>)>
+    │    └ <member '_context' of 'Handle' objects>
+    └ <Handle Task.task_wakeup(<Future finis...7f6364f9b2d0>>)>
+  File "/home/ivkrak/programming/del_bot/venv/lib/python3.11/site-packages/telethon/client/updates.py", line 520, in _dispatch_update
+    await callback(event)
+          │        └ <telethon.events.newmessage.NewMessage.Event object at 0x7f6364f9a310>
+          └ <bound method Bot.new_message_event of <__main__.Bot object at 0x7f6364f8e450>>
+
+> File "/home/ivkrak/programming/del_bot/main.py", line 475, in new_message_event
+    await self.commands.get(event.message.message.split("@")[0])(event)
+          │    │        │   │     │       │       │              └ <telethon.events.newmessage.NewMessage.Event object at 0x7f6364f9a310>
+          │    │        │   │     │       │       └ <method 'split' of 'str' objects>
+          │    │        │   │     │       └ '/delete_banned_users@delete_all_people_in_chat_bot'
+          │    │        │   │     └ <telethon.tl.patched.Message object at 0x7f6364f99f10>
+          │    │        │   └ <telethon.events.newmessage.NewMessage.Event object at 0x7f6364f9a310>
+          │    │        └ <method 'get' of 'dict' objects>
+          │    └ {'/start': <bound method Bot.start_command of <__main__.Bot object at 0x7f6364f8e450>>, '/panel': <bound method Bot.only_grou...
+          └ <__main__.Bot object at 0x7f6364f8e450>
+
+  File "/home/ivkrak/programming/del_bot/main.py", line 267, in inner
+    return await func(self, event)
+                 │    │     └ <telethon.events.newmessage.NewMessage.Event object at 0x7f6364f9a310>
+                 │    └ <__main__.Bot object at 0x7f6364f8e450>
+                 └ <function Bot.delete_banned_users at 0x7f6364f91120>
+
+  File "/home/ivkrak/programming/del_bot/main.py", line 404, in delete_banned_users
+    chat_info = await self.bot_client(functions.channels.GetFullChannelRequest(entity)).full_chat
+                      │    │          │         │        │                     └ <telethon.tl.types.Channel object at 0x7f6366891010>
+                      │    │          │         │        └ <class 'telethon.tl.functions.channels.GetFullChannelRequest'>
+                      │    │          │         └ <module 'telethon.tl.functions.channels' from '/home/ivkrak/programming/del_bot/venv/lib/python3.11/site-packages/telethon/tl...
+                      │    │          └ <module 'telethon.functions' from '/home/ivkrak/programming/del_bot/venv/lib/python3.11/site-packages/telethon/functions.py'>
+                      │    └ <property object at 0x7f6364f75da0>
+                      └ <__main__.Bot object at 0x7f6364f8e450>
+
+AttributeError: 'coroutine' object has no attribute 'full_chat'
+2023-03-16T03:05:38.406280+0800 INFO Бот запущен
+2023-03-16T03:11:15.540839+0800 INFO Бот запущен
+2023-03-16T03:11:23.906643+0800 DEBUG 4
+2023-03-16T03:11:23.907206+0800 DEBUG 4
+2023-03-16T03:14:51.246573+0800 INFO Бот запущен
+2023-03-16T03:15:05.769539+0800 DEBUG 4
+2023-03-16T03:15:05.769989+0800 DEBUG 4
+2023-03-16T03:15:05.770299+0800 DEBUG 0
+2023-03-16T03:17:03.068263+0800 INFO Бот запущен
+2023-03-16T03:17:06.832669+0800 DEBUG admins=4
+2023-03-16T03:17:06.833119+0800 DEBUG all_users=4
+2023-03-16T03:17:06.833443+0800 DEBUG not_admin_users=0
+2023-03-16T03:18:18.913091+0800 DEBUG admins=4
+2023-03-16T03:18:18.913596+0800 DEBUG all_users=2
+2023-03-16T03:18:18.913831+0800 DEBUG not_admin_users=-2
+2023-03-16T03:18:33.735544+0800 DEBUG admins=4
+2023-03-16T03:18:33.735982+0800 DEBUG all_users=2
+2023-03-16T03:18:33.736272+0800 DEBUG not_admin_users=-2
+2023-03-16T03:49:56.221903+0800 INFO Бот запущен
+2023-03-16T03:51:18.405652+0800 DEBUG admins=4
+2023-03-16T03:51:18.406163+0800 DEBUG all_users=2
+2023-03-16T03:51:18.406480+0800 DEBUG not_admin_users=-2
+2023-03-16T03:51:26.108868+0800 DEBUG admins=4
+2023-03-16T03:51:26.109340+0800 DEBUG all_users=2
+2023-03-16T03:51:26.109649+0800 DEBUG not_admin_users=-2
